@@ -1,0 +1,92 @@
+[
+	{
+		"id": 1,
+		"title": "producto prueba nombre cambiado jejejeje",
+		"description": "Este es un producto prueba ",
+		"price": 250,
+		"thumbnail": "sin imagen",
+		"code": "abc123",
+		"stock": 25
+	},
+	{
+		"id": 2,
+		"title": "producto prueba",
+		"description": "Este es un producto prueba pero con el nombre cambiado",
+		"price": 250,
+		"thumbnail": "sin imagen",
+		"code": "a1b2c3",
+		"stock": 25
+	},
+	{
+		"id": 3,
+		"title": "producto prueba",
+		"description": "Este es un producto prueba",
+		"price": 200,
+		"thumbnail": "sin imagen",
+		"code": "123abc",
+		"stock": 25
+	},
+	{
+		"id": 4,
+		"title": "Producto 4 prueba",
+		"description": "Este es un producto prueba 4 ",
+		"price": 20,
+		"thumbnail": "sin imagen",
+		"code": "1b2ndjs",
+		"stock": 21
+	},
+	{
+		"id": 5,
+		"title": "Producto 5 prueba",
+		"description": "Este es un producto prueba 5 ",
+		"price": 256,
+		"thumbnail": "sin imagen",
+		"code": "khlmv",
+		"stock": 13
+	},
+	{
+		"id": 6,
+		"title": "Producto 6 prueba",
+		"description": "Este es un producto prueba 6 ",
+		"price": 50,
+		"thumbnail": "sin imagen",
+		"code": "abfg123",
+		"stock": 10
+	},
+	{
+		"id": 7,
+		"title": "Producto 7 prueba",
+		"description": "Este es un producto prueba 7 ",
+		"price": 450,
+		"thumbnail": "sin imagen",
+		"code": "abf673",
+		"stock": 6
+	},
+	{
+		"id": 8,
+		"title": "Producto 8 prueba",
+		"description": "Este es un producto prueba 8 ",
+		"price": 520,
+		"thumbnail": "sin imagen",
+		"code": "abc563",
+		"stock": 12
+	},
+	{
+		"id": 9,
+		"title": "Producto 9 prueba",
+		"description": "Este es un producto prueba 9",
+		"price": 258,
+		"thumbnail": "sin imagen",
+		"code": "a2gb3gd3",
+		"stock": 69
+	},
+	{
+		"id": 10,
+		"title": "Producto 10 prueba",
+		"description": "Este es un producto prueba 10",
+		"price": 235,
+		"thumbnail": "sin imagen",
+		"code": "agk3lsa",
+		"stock": 28
+	}
+]
