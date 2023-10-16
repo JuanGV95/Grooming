@@ -5,34 +5,35 @@ const app = express();
 app.use(express.urlencoded({ extended: true }));
 const productManager = new ProductManager('./Products.json');
  
+
+
+
 app.get('/products', (req, res) => {
     const { query } = req;
     const { limit } = query;
     productManager.getProducts()
-        .then(products => {
-            if (!limit) {
-                res.json(products);
-            } else {
-                const result = products.filter((product) => product.id <= parseInt(limit));
-                res.json(result);
-            }
-        })
-        .catch(error => {
-            console.error(error);
-        });
+    .then(products => {
+        if (!limit) {
+            res.json(products);
+        } else {
+            const result = products.filter((product) => product.id <= parseInt(limit));
+            res.json(result);
+        }
+    })
+    .catch(error => {
+        console.error(error);
+    });
 });
 
-app.get('/products/:pid', (req, res) => {
-    const { pid } = req.params;
-    const product = productManager.getProductsById((currentUser) => {
-      return currentUser.id === parseInt(pid);
-    });
+app.get('/products/:pid', async (req, res)  =>{
+    const { pid } = req.params; // Usar 'pid' en lugar de 'id'
+    const product = await productManager.getProductsById(parseInt(pid));
     if (!product) {
-      res.json({ error: 'Producto no encontrado.'})
+        res.json({ error: 'Producto no encontrado.' });
     } else {
-      res.json(product);
+        res.json(product);
     }
-  });
+});
 
 
 app.listen(8080, () =>{

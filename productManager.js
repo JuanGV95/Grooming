@@ -43,17 +43,14 @@ class ProductManager {
     }
 
     // getProductsById
-
-    getProductsById(ident) {
-        const productId = this.products.find((ide) => ide.id === ident);
-        if (!productId) {
-            console.log("Not Found")
-            return;
-        }
-        return productId;
+    async getProductsById(ident) {
+    const products = await this.getJsonFromFile(this.path);
+    const productId = products.find((ide) => ide.id === ident);
+    if (!productId) {
+        return null; 
     }
-
-    
+    return productId;
+}
 
     // updateProduct
     async updateProduct(id, data){
@@ -81,6 +78,7 @@ class ProductManager {
         if(stock){
             products[position].stock = stock;
         }
+
         await this.saveJsonInFile(this.path, products);
         console.log('Product actualized succesfully!');
 
@@ -104,7 +102,7 @@ class ProductManager {
         }
 
         await this.saveJsonInFile(this.path, products);
-        console.log('ID del producto eliminado: ', products.id);
+        console.log('ID del producto eliminado: ', id);
     }
 
     async getJsonFromFile(path) {
@@ -133,40 +131,40 @@ class ProductManager {
 }
 module.exports = ProductManager;
 
-async function test() {
-    const productManager = new ProductManager('./Products.json');
-    const data = {
-        title: 'producto prueba',
-        description: 'Este es un producto prueba',
-        price: 200,
-        thumbnail: 'sin imagen',
-        code: '123abc',
-        stock: 25
-    }
-    const data2 = {
-        title: 'producto prueba',
-        description: 'Este es un producto prueba',
-        price: 200,
-        thumbnail: 'sin imagen',
-        code: 'abc123',
-        stock: 25
-    }
-    const data3 = {
-        title: 'producto prueba',
-        description: 'Este es un producto prueba',
-        price: 200,
-        thumbnail: 'sin imagen',
-        code: 'a1b2c3',
-        stock: 25
-    }
-    await productManager.addProduct(data);
-    await productManager.addProduct(data2);
-    await productManager.addProduct(data3);
-    await productManager.updateProduct(1,{title: 'producto prueba nombre cambiado jejejeje'})
-    await productManager.updateProduct(2,{description: 'Este es un producto prueba pero con el nombre cambiado', price: 250})
-    //console.log(await productManager.deleteProduct(2));
-    console.log(await productManager.getProducts());
-}
+// async function test() {
+//     const productManager = new ProductManager('./Products.json');
+//     const data = {
+//         title: 'producto prueba',
+//         description: 'Este es un producto prueba',
+//         price: 200,
+//         thumbnail: 'sin imagen',
+//         code: '123abc',
+//         stock: 25
+//     }
+//     const data2 = {
+//         title: 'producto prueba',
+//         description: 'Este es un producto prueba',
+//         price: 200,
+//         thumbnail: 'sin imagen',
+//         code: 'abc123',
+//         stock: 25
+//     }
+//     const data3 = {
+//         title: 'producto prueba',
+//         description: 'Este es un producto prueba',
+//         price: 200,
+//         thumbnail: 'sin imagen',
+//         code: 'a1b2c3',
+//         stock: 25
+//     }
+//     //await productManager.addProduct(data);
+//     //await productManager.addProduct(data2);
+//     //await productManager.addProduct(data3);
+//     //await productManager.updateProduct(1,{title: 'producto prueba nombre cambiado jejejeje'})
+//     await productManager.getProductsById(2);
+//     //console.log(await productManager.deleteProduct(2));
+//     console.log(await productManager.getProductsById(2));
+// }
 
 //test()
 
