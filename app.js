@@ -33,7 +33,6 @@ app.get('/products/:pid', async (req, res)  =>{
     } else {
         res.json(product);
     }
-    console.log(product);
 });
 
 
