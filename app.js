@@ -26,13 +26,14 @@ app.get('/products', (req, res) => {
 });
 
 app.get('/products/:pid', async (req, res)  =>{
-    const { pid } = req.params; // Usar 'pid' en lugar de 'id'
+    const { pid } = req.params; 
     const product = await productManager.getProductsById(parseInt(pid));
     if (!product) {
         res.json({ error: 'Producto no encontrado.' });
     } else {
         res.json(product);
     }
+    console.log(product);
 });
 
 
