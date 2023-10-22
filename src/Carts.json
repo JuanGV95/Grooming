@@ -28,11 +28,11 @@
 		"products": [
 			{
 				"pid": 1,
-				"quantity": 3
+				"quantity": 6
 			},
 			{
 				"pid": 2,
-				"quantity": 1
+				"quantity": 3
 			},
 			{
 				"pid": 3,
@@ -40,8 +40,16 @@
 			},
 			{
 				"pid": 4,
+				"quantity": 5
+			},
+			{
+				"pid": 5,
 				"quantity": 1
 			}
 		]
+	},
+	{
+		"id": 8,
+		"products": []
 	}
 ]

@@ -33,25 +33,24 @@ class CartManager {
     async addProductInCart(cid, pid) {
         const carts = await this.getJsonFromFile(this.path);
         const cart = carts.find((c) => c.id === cid);
-        console.log(cart)
+    
         if (cart) {
-            console.log(pid)
-            console.log(cart.products)
-            const productId = cart.products.find((p) => p.pid === pid)
-            console.log(`Este es el product ID ${productId}`);
-            console.log(`Este es el id del Cart ${cid} `)
-            if (productId) {
-                productId.quantity++;
-                console.log(`Este es el producto con el quantity aumentado ${productId} `)
+            const productIndex = cart.products.findIndex((product) => product.pid === pid);
+            if (productIndex !== -1) {
+                cart.products[productIndex].quantity++;
             } else {
                 const product = {
-                    pid: cart.products.length + 1,
+                    pid,
                     quantity: 1,
                 };
                 cart.products.push(product);
             }
+            await this.saveJsonInFile(this.path, carts);
+            return cart;
+        } else {
+
+            return null;
         }
-        await this.saveJsonInFile(this.path, carts);
     }
     
 
@@ -80,19 +79,19 @@ class CartManager {
 }
 module.exports = CartManager;
 
-// async function test() {
-//     const cartManager = new CartManager("./Carts.json");
-//     const cart1 = {
-//         products: [],
-//     };
+  async function test() {
+      const cartManager = new CartManager("./Carts.json");
+      const cart1 = {
+          products: [],
+      };
 
-//     const cart2 = {
-//         products: [],
-//     };
-//     //await cartManager.addCart(cart1);
-//     //await cartManager.addCart(cart2);
-//     console.log(await cartManager.getCarts());
-//     console.log(await cartManager.getCartById(2));
-//     console.log(await cartManager.addProductInCart(7, 4));
-// }
-// test();
+      const cart2 = {
+          products: [],
+      };
+      //await cartManager.addCart(cart1);
+      //await cartManager.addCart(cart2);
+      console.log(await cartManager.getCarts());
+      console.log(await cartManager.getCartById(2));
+      console.log(await cartManager.addProductInCart(7, 4));
+  }
+  test();
