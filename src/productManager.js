@@ -16,8 +16,8 @@ class ProductManager {
     // addProduct
 
     async addProduct(data) {
-        const { title, description, price, thumbnail, code, stock } = data;
-        if (!title || !description || !price || !thumbnail || !code || !stock) {
+        const { title, description, price, status, category, thumbnails, code, stock } = data;
+        if (!title || !description || !price || !status || !category || !thumbnails || !code || !stock) {
             throw new Error('Todos los campos son requeridos');
         }
         const products = await this.getJsonFromFile(this.path);
@@ -32,7 +32,9 @@ class ProductManager {
                 title,
                 description,
                 price,
-                thumbnail,
+                status,
+                category,
+                thumbnails,
                 code,
                 stock
             };
@@ -131,40 +133,41 @@ class ProductManager {
 }
 module.exports = ProductManager;
 
-// async function test() {
-//     const productManager = new ProductManager('./Products.json');
-//     const data = {
-//         title: 'producto prueba',
-//         description: 'Este es un producto prueba',
-//         price: 200,
-//         thumbnail: 'sin imagen',
-//         code: '123abc',
-//         stock: 25
-//     }
-//     const data2 = {
-//         title: 'producto prueba',
-//         description: 'Este es un producto prueba',
-//         price: 200,
-//         thumbnail: 'sin imagen',
-//         code: 'abc123',
-//         stock: 25
-//     }
-//     const data3 = {
-//         title: 'producto prueba',
-//         description: 'Este es un producto prueba',
-//         price: 200,
-//         thumbnail: 'sin imagen',
-//         code: 'a1b2c3',
-//         stock: 25
-//     }
-//     //await productManager.addProduct(data);
-//     //await productManager.addProduct(data2);
-//     //await productManager.addProduct(data3);
-//     //await productManager.updateProduct(1,{title: 'producto prueba nombre cambiado jejejeje'})
-//     await productManager.getProductsById(2);
-//     //console.log(await productManager.deleteProduct(2));
-//     console.log(await productManager.getProductsById(2));
-// }
+//  async function test() {
+//      const productManager = new ProductManager('./Products.json');
+//      const data = {
+//          title: 'producto prueba',
+//          description: 'Este es un producto prueba',
+//          price: 200,
+//          thumbnail: 'sin imagen',
+//          code: '123abc',
+//          stock: 25
+//      }
+//      const data2 = {
+//          title: 'producto prueba',
+//          description: 'Este es un producto prueba',
+//          price: 200,
+//          thumbnail: 'sin imagen',
+//          code: 'abc123',
+//          stock: 25
+//      }
+//      const data3 = {
+//          title: 'producto prueba',
+//          description: 'Este es un producto prueba',
+//          price: 200,
+//          thumbnail: 'sin imagen',
+//          code: 'a1b2c3',
+//          stock: 25
+//      }
+//      //await productManager.addProduct(data);
+//      //await productManager.addProduct(data2);
+//      //await productManager.addProduct(data3);
+//      //await productManager.updateProduct(1,{title: 'producto prueba nombre cambiado jejejeje'})
+//      await productManager.getProducts();
+//      //console.log(await productManager.deleteProduct(2));
+//      console.log(await productManager.getProductsById(2));
+//      console.log(await productManager.getProducts())
+//  }
 
-//test()
+// test()
 
