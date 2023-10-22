@@ -79,19 +79,19 @@ class CartManager {
 }
 module.exports = CartManager;
 
-  async function test() {
-      const cartManager = new CartManager("./Carts.json");
-      const cart1 = {
-          products: [],
-      };
+//   async function test() {
+//       const cartManager = new CartManager("./Carts.json");
+//       const cart1 = {
+//           products: [],
+//       };
 
-      const cart2 = {
-          products: [],
-      };
-      //await cartManager.addCart(cart1);
-      //await cartManager.addCart(cart2);
-      console.log(await cartManager.getCarts());
-      console.log(await cartManager.getCartById(2));
-      console.log(await cartManager.addProductInCart(7, 4));
-  }
-  test();
+//       const cart2 = {
+//           products: [],
+//       };
+//       //await cartManager.addCart(cart1);
+//       //await cartManager.addCart(cart2);
+//       console.log(await cartManager.getCarts());
+//       console.log(await cartManager.getCartById(2));
+//       console.log(await cartManager.addProductInCart(7, 4));
+//   }
+//   test();
