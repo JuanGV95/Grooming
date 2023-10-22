@@ -62,5 +62,17 @@ router.put('/products/:pid', async (req, res) => {
     res.status(200).json(updatedProduct);
 });
 
+router.delete('/products/:pid', async (req, res) =>{
+    const { params } = req;
+    const productId = params.pid;
+    const product = await productManager.getProductsById(parseInt(productId));
+    console.log('ID del producto que se busca:', productId);
+    if(product === -1){
+        res.status(404).json({ message: 'El producto no se encontro' })
+        return;
+    }
+    const deleteProduct = productManager.deleteProduct(product.id)
+    res.status(200).json({ message: 'El producto fue eliminado' })
+})
 
 module.exports = router;
