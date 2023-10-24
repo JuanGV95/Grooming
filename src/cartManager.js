@@ -1,4 +1,8 @@
 const fs = require("fs");
+const path = require('path');
+
+const ProductManager = require('./productManager');
+const productManager = new ProductManager(path.join(__dirname,'./Products.json'));
 
 class CartManager {
     constructor(path) {
@@ -33,25 +37,31 @@ class CartManager {
     async addProductInCart(cid, pid) {
         const carts = await this.getJsonFromFile(this.path);
         const cart = carts.find((c) => c.id === cid);
-    
-        if (cart) {
-            const productIndex = cart.products.findIndex((product) => product.pid === pid);
-            if (productIndex !== -1) {
-                cart.products[productIndex].quantity++;
-            } else {
-                const product = {
-                    pid,
-                    quantity: 1,
-                };
-                cart.products.push(product);
-            }
-            await this.saveJsonInFile(this.path, carts);
-            return cart;
-        } else {
-
-            return null;
+        const productId = await productManager.getProductsById(pid);
+      
+        if (!productId) {
+          throw new Error(`El producto con el id ${pid} no se encuentra.`);
         }
-    }
+      
+        if (cart) {
+          const productIndex = cart.products.findIndex((product) => product.pid === productId.id);
+      
+          if (productIndex !== -1) {
+            cart.products[productIndex].quantity++;
+          } else {
+            const product = {
+              pid: productId.id,
+              quantity: 1,
+            };
+            cart.products.push(product);
+          }
+      
+          await this.saveJsonInFile(this.path, carts);
+          return cart;
+        } else {
+          return null;
+        }
+      }
     
 
     async getJsonFromFile(path) {

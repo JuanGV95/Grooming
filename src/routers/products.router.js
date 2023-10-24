@@ -33,6 +33,7 @@ router.get('/products/:pid', async (req, res)  =>{
     } else {
         res.json(product);
     }
+    console.log(product);
 })
 
 router.post('/products', async (req, res) => {
