@@ -1,4 +1,4 @@
-const fs = require('fs');
+import fs from 'fs';
 
 class ProductManager {
 
@@ -56,7 +56,7 @@ class ProductManager {
 
     // updateProduct
     async updateProduct(id, data){
-        const { title, description, price, thumbnail, code, stock } = data;
+        const { title, description, price, status, category, thumbnail, code, stock } = data;
         const products = await this.getJsonFromFile(this.path);
         const position = products.findIndex((u) => u.id === id);
         if(position === -1){
@@ -70,6 +70,12 @@ class ProductManager {
         }
         if(price){
             products[position].price = price;
+        }
+        if(status){
+            products[position].status = status;
+        }
+        if(category){
+            products[position].category = category;
         }
         if(thumbnail){
             products[position].thumbnail = thumbnail;
@@ -131,7 +137,7 @@ class ProductManager {
     }
 
 }
-module.exports = ProductManager;
+export default ProductManager;
 
 //   async function test() {
 //       const productManager = new ProductManager('./Products.json');

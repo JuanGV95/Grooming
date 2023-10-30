@@ -1,7 +1,7 @@
 [
 	{
 		"id": 1,
-		"title": "producto prueba nombre cambiado jejejeje",
+		"title": "producto prueba nombre cambiado",
 		"description": "Este es un producto prueba ",
 		"price": 250,
 		"status": true,
@@ -89,17 +89,6 @@
 	},
 	{
 		"id": 9,
-		"title": "Producto 10 prueba",
-		"description": "Este es un producto prueba 10",
-		"price": 235,
-		"status": true,
-		"category": "temporal",
-		"thumbnails": [],
-		"code": "agk3lsa",
-		"stock": 28
-	},
-	{
-		"id": 10,
 		"title": "Producto 15 prueba",
 		"description": "Este es un producto prueba 15",
 		"price": 258,
@@ -113,7 +102,7 @@
 		"stock": 69
 	},
 	{
-		"id": 11,
+		"id": 10,
 		"title": "Producto con POST",
 		"description": "Este es un producto prueba con POST",
 		"price": 258,

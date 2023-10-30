@@ -1,7 +1,8 @@
-const fs = require("fs");
-const path = require('path');
+import fs from 'fs';
+import path from 'path';
 
-const ProductManager = require('./productManager');
+import { __dirname } from './utils.js';
+import ProductManager from './productManager.js';
 const productManager = new ProductManager(path.join(__dirname,'./Products.json'));
 
 class CartManager {
@@ -87,7 +88,7 @@ class CartManager {
         }
     }
 }
-module.exports = CartManager;
+export default CartManager;
 
 //   async function test() {
 //       const cartManager = new CartManager("./Carts.json");

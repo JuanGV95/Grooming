@@ -1,9 +1,10 @@
-const { Router } = require('express');
-const path = require('path');
+import { Router } from 'express';
+import path from 'path';
 const router = Router();
 
-const CartManager = require('../cartManager');
-const cartManager = new CartManager(path.join(__dirname,'../Carts.json'));
+import { __dirname } from '../utils.js';
+import CartManager from '../cartManager.js';
+const cartManager = new CartManager(path.join(__dirname,'../src/Carts.json'));
 
 router.get('/carts/:cid', async (req, res)=>{
     const{ cid } = req.params;
@@ -38,4 +39,4 @@ router.post('/carts/:cid/product/:pid', async (req, res) => {
         res.status(400).json({ error: error.message });
     }
 });
-module.exports = router
+export default router

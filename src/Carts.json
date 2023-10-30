@@ -33,6 +33,10 @@
 		"products": [
 			{
 				"pid": 5,
+				"quantity": 2
+			},
+			{
+				"pid": 2,
 				"quantity": 1
 			}
 		]

@@ -1,9 +1,10 @@
-const { Router } = require('express');
-const path = require('path');
+import { Router } from 'express';
+import path from 'path';
 const router = Router();
 
-const ProductManager = require('../productManager');
-const productManager = new ProductManager(path.join(__dirname,'../Products.json'));
+import { __dirname } from '../utils.js';
+import ProductManager from '../productManager.js';
+const productManager = new ProductManager(path.join(__dirname,'../src/Products.json'));
 
 
 router.get('/products', async (req, res) => {
@@ -63,17 +64,19 @@ router.put('/products/:pid', async (req, res) => {
     res.status(200).json(updatedProduct);
 });
 
-router.delete('/products/:pid', async (req, res) =>{
+router.delete('/products/:pid', async (req, res) => {
     const { params } = req;
     const productId = params.pid;
     const product = await productManager.getProductsById(parseInt(productId));
     console.log('ID del producto que se busca:', productId);
-    if(product === -1){
-        res.status(404).json({ message: 'El producto no se encontro' })
+    
+    if (!product) {
+        res.status(404).json({ message: 'El producto no se encontró' });
         return;
     }
-    const deleteProduct = productManager.deleteProduct(product.id)
-    res.status(200).json({ message: 'El producto fue eliminado' })
-})
+    
+    await productManager.deleteProduct(product.id);
+    res.status(200).json({ message: 'El producto fue eliminado' });
+});
 
-module.exports = router;
+export default router;
