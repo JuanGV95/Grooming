@@ -86,33 +86,5 @@
 		"thumbnails": [],
 		"code": "abc563",
 		"stock": 12
-	},
-	{
-		"id": 9,
-		"title": "Producto 15 prueba",
-		"description": "Este es un producto prueba 15",
-		"price": 258,
-		"status": true,
-		"category": "temporal",
-		"thumbnails": [
-			"imagen1.jpg",
-			"imagen2.jpg"
-		],
-		"code": "a2gb3asdfgherysdf",
-		"stock": 69
-	},
-	{
-		"id": 10,
-		"title": "Producto con POST",
-		"description": "Este es un producto prueba con POST",
-		"price": 258,
-		"status": true,
-		"category": "temporal",
-		"thumbnails": [
-			"imagen1.jpg",
-			"imagen2.jpg"
-		],
-		"code": "a2gb3asdfghersdf",
-		"stock": 69
 	}
 ]

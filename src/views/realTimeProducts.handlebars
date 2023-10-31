@@ -1,26 +1,11 @@
 <div class="encabezado">
    <h1>Catalogo de productos</h1> 
 </div>
-<div class="container">
-{{#each products}}
-<section class="card">
-<img src="#" alt="Imagen de prueba" class="card-img">
-<h2>{{title}}</h2>
-<p><span>Categoria</span>: {{category}}</p>
-<article class="card-price">
-<p><span>Precio</span>: {{price}}</p>
-<p><span>Stock</span>: {{stock}}</p>   
-</article>
-<p><span>Cod. producto</span>: {{code}} </p>
-<button id="deleteProduct" type="submit">Eliminar Producto</button>
+<div id="contenedorCard" class="container">
+<section id="cardSocket" class="card">
 </section>
-{{/each}}
 </div>
-<form action="" class="" enctype="multipart/form-data">
-<input type="text" placeholder="Holi probanding">
-</form>
-
-
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="/socket.io/socket.io.js"></script>
 <script src="js/index.js"></script>
 
