@@ -4,14 +4,15 @@
 <div class="container">
 {{#each products}}
 <section class="card">
-<img src="#" alt="Imagen de prueba" class="card-img">
-<h2>{{title}}</h2>
-<p><span>Categoria</span>: {{category}}</p>
-<article class="card-price">
-<p><span>Precio</span>: {{price}}</p>
-<p><span>Stock</span>: {{stock}}</p>   
-</article>
-<p><span>Cod. producto</span>: {{code}} </p>
+<img src="../img/Star_Wars_Logo.svg.png" alt="Imagen de prueba" class="card-img">
+      <h2>{{title}}</h2>
+      <p><span>Categoria</span>: {{category}}</p>
+      <article class="card-price">
+        <p><span>Precio</span>: {{price}}</p>
+        <p><span>Stock</span>: {{stock}}</p>   
+      </article>
+      <p><span>Cod. producto</span>: {{code}}</p>
+      <button class="card-boton-borrar" id="deleteProduct${product.id}">Eliminar Producto</button>
 </section>
 {{/each}}
 </div>

@@ -56,35 +56,24 @@
 	},
 	{
 		"id": 6,
-		"title": "Producto 6 prueba",
-		"description": "Este es un producto prueba 6 ",
-		"price": 50,
-		"status": true,
+		"title": "Desarrollo Backend",
+		"description": "Añadimos un producto con websocket",
+		"price": "20",
+		"status": "true",
 		"category": "temporal",
-		"thumbnails": [],
-		"code": "abfg123",
-		"stock": 10
+		"thumbnails": "img",
+		"code": "s0k3t",
+		"stock": "20"
 	},
 	{
 		"id": 7,
-		"title": "Producto 7 prueba",
-		"description": "Este es un producto prueba 7 ",
-		"price": 450,
-		"status": true,
+		"title": "JavaScript",
+		"description": "Tengo que añadir SweetAlert mas adelante",
+		"price": "25",
+		"status": "true",
 		"category": "temporal",
-		"thumbnails": [],
-		"code": "abf673",
-		"stock": 6
-	},
-	{
-		"id": 8,
-		"title": "Producto 8 prueba",
-		"description": "Este es un producto prueba 8 ",
-		"price": 520,
-		"status": true,
-		"category": "temporal",
-		"thumbnails": [],
-		"code": "abc563",
-		"stock": 12
+		"thumbnails": "si tuviera una",
+		"code": "sok3t",
+		"stock": "203"
 	}
 ]

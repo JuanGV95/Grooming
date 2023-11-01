@@ -10,22 +10,35 @@ export const init = (httpServer) => {
 
   io = new Server(httpServer);
 
-  io.on('connection', async (socketClient)=>{
+  io.on('connection', async (socketClient) => {
+
+    console.log(`Nuevo cliente socket conectado ${socketClient.id} 🎊`);
+
     const productManager = new ProductManager(path.join(__dirname, './Products.json'));
     const products = await productManager.getProducts();
     socketClient.emit('getProducts', products);
-
+    socketClient.emit('client-emit', { status: "cliente conectado" });
     socketClient.on('deleteProduct', async (productId) => {
       try {
-        // Elimina el producto en el servidor utilizando la función deleteProduct
+
         await productManager.deleteProduct(productId);
-        
-        // Emita un evento para notificar a todos los clientes que el producto ha sido eliminado
+
         io.emit('productDeleted', productId);
       } catch (error) {
         console.error('Error al eliminar el producto:', error);
-        // Manejar errores, por ejemplo, emitir un evento de error
       }
-    });  
+    });
+
+    socketClient.on('addProduct', async (newProduct) => {
+      try {
+
+        await productManager.addProduct(newProduct);
+
+        io.emit('productAdded', newProduct);
+      } catch (error) {
+        console.error('Error al añadir un producto', error);
+      }
+    });
+
   })
 }; 
