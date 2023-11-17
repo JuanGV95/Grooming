@@ -1,8 +1,7 @@
 //Servidor
 import { Server } from 'socket.io'
-import path from 'path';
-import { __dirname } from './utils.js';
-import ProductManager from './productManager.js';
+
+import ProductManager from './dao/products.manager.js';
 
 let io;
 
@@ -14,14 +13,14 @@ export const init = (httpServer) => {
 
     console.log(`Nuevo cliente socket conectado ${socketClient.id} 🎊`);
 
-    const productManager = new ProductManager(path.join(__dirname, './Products.json'));
-    const products = await productManager.getProducts();
+    const products = await ProductManager.get();
     socketClient.emit('getProducts', products);
     socketClient.emit('client-emit', { status: "cliente conectado" });
-    socketClient.on('deleteProduct', async (productId) => {
+    
+    socketClient.on('deleteProduct', (productId) => {
       try {
 
-        await productManager.deleteProduct(productId);
+         ProductManager.deleteById(productId);
 
         io.emit('productDeleted', productId);
       } catch (error) {
@@ -32,7 +31,7 @@ export const init = (httpServer) => {
     socketClient.on('addProduct', async (newProduct) => {
       try {
 
-        await productManager.addProduct(newProduct);
+        await ProductManager.create(newProduct);
 
         io.emit('productAdded', newProduct);
       } catch (error) {

@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 
-import { __dirname } from './utils.js';
+import { __dirname } from '../utils.js';
 import ProductManager from './productManager.js';
 const productManager = new ProductManager(path.join(__dirname,'./Products.json'));
 

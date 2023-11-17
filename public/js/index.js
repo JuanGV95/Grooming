@@ -18,7 +18,7 @@ function confirmarEliminacion(product) {
   }).then((result) => {
     if (result.isConfirmed) {
       // El usuario ha confirmado la eliminación, emitir el evento "deleteProduct"
-      socket.emit('deleteProduct', product.id);
+      socket.emit('deleteProduct', product._id);
     }
   });
 }

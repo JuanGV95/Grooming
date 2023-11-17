@@ -3,7 +3,7 @@ import path from 'path';
 const router = Router();
 
 import { __dirname } from '../utils.js';
-import CartManager from '../cartManager.js';
+import CartManager from '../dao/cartManager.js';
 const cartManager = new CartManager(path.join(__dirname,'../src/Carts.json'));
 
 router.get('/carts/:cid', async (req, res)=>{

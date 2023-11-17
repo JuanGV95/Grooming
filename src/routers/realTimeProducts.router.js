@@ -1,18 +1,14 @@
 import { Router } from 'express';
 const router = Router();
-import path from 'path';
 
+import ProductManager from '../dao/products.manager.js';
 
-
-import { __dirname } from '../utils.js';
-import ProductManager from '../productManager.js';
-const productManager = new ProductManager(path.join(__dirname, '../src/Products.json'));
 
 router.get('/realtimeproducts', async (req, res) => {
     try {
         const { query } = req;
         const { limit } = query;
-        const products = await productManager.getProducts();
+        const products = await ProductManager.get();
 
         if (!limit) {
             res.render('realTimeProducts', { title: 'Catalogo', products: { ...products } });

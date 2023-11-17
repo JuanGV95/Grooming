@@ -3,7 +3,7 @@ import path from 'path';
 const router = Router();
 
 import { __dirname } from '../utils.js';
-import ProductManager from '../productManager.js';
+import ProductManager from '../dao/productManager.js';
 const productManager = new ProductManager(path.join(__dirname,'../src/Products.json'));
 
 
