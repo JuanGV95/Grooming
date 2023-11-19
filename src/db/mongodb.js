@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 
-const URI = 'su URI aqui';
+const URI = '';
 
 export const init = async () =>{
     try {
