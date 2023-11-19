@@ -13,7 +13,7 @@ router.get('/', async (req, res) => {
         if (!limit) {
             res.render('index', { title: 'Catalogo', products: { ...products } });
         } else {
-            const result = products.filter((product) => product.id <= parseInt(limit));
+            const result = products.find((product) => product.id <= parseInt(limit));
             res.render('index', { title: 'Catalogo', products: { ...result } })
         }
     } catch (error) {
@@ -21,5 +21,9 @@ router.get('/', async (req, res) => {
         res.status(500).json({ error: 'Error al obtener los productos.' });
     }
 })
+
+router.get('/chat', (req, res)=>{
+    res.render('chat', {title: 'Grooming Chat'});
+});
 
 export default router;

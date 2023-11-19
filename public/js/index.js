@@ -86,3 +86,5 @@ addProductForm.addEventListener('submit', (event) => {
 socket.on('productDeleted', (productId) => {
  console.log(`Producto eliminado ${productId}`)
 });
+
+

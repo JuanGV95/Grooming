@@ -2,7 +2,7 @@
 import { Server } from 'socket.io'
 
 import ProductManager from './dao/products.manager.js';
-
+import MessageModel from './dao/models/message.model.js';
 let io;
 
 export const init = (httpServer) => {
@@ -38,6 +38,16 @@ export const init = (httpServer) => {
         console.error('Error al añadir un producto', error);
       }
     });
+
+    //Cliente del chat
+    const messages = await MessageModel.find({});
+    socketClient.emit('update-messages', messages);
+
+    socketClient.on('new-message', async (msg) => {
+      await MessageModel.create(msg);
+      const messages = await MessageModel.find({});
+      io.emit('update-messages', messages);
+    })
 
   })
 }; 
