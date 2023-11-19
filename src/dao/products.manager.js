@@ -6,7 +6,7 @@ export default class ProductManager{
     }
     static async getById(pid) {
         const product = await ProductModel.findById(pid);
-        console.log(product);
+        console.log('product', product);
         if(!product){
             throw new Error('Producto no encontrado.');
         }
@@ -20,7 +20,7 @@ export default class ProductManager{
     }
 
     static async updateById(pid, data){
-        await ProductModel.updateOne({ _id: pid}, {$set: data});
+        await ProductModel.updateOne({ _id: pid }, { $set: data });
         console.log(`Producto actualizado correctamente (${pid})`);
     }
 

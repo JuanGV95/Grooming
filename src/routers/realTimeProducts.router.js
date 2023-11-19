@@ -11,9 +11,9 @@ router.get('/realtimeproducts', async (req, res) => {
         const products = await ProductManager.get();
 
         if (!limit) {
-            res.render('realTimeProducts', { title: 'Catalogo', products: { ...products } });
+            res.status(200).render('realTimeProducts', { title: 'Catalogo', products: { ...products } });
         } else {
-            const result = products.filter((product) => product.id <= parseInt(limit));
+            const result = products.filter((product) => product._id <= parseInt(limit));
             res.render('realTimeProducts', { title: 'Catalogo', products: { ...result } })
         }
     } catch (error) {

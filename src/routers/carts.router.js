@@ -1,14 +1,12 @@
 import { Router } from 'express';
-import path from 'path';
+
 const router = Router();
 
-import { __dirname } from '../utils.js';
-import CartManager from '../dao/cartManager.js';
-const cartManager = new CartManager(path.join(__dirname,'../src/Carts.json'));
+import CartManager from '../dao/carts.manager.js';
 
 router.get('/carts/:cid', async (req, res)=>{
     const{ cid } = req.params;
-    const cart = await cartManager.getCartById(parseInt(cid));
+    const cart = await CartManager.getById(cid);
     if(!cart){
         res.json({ error: 'Carrito no encontrado.' });
     } else {
@@ -19,7 +17,7 @@ router.get('/carts/:cid', async (req, res)=>{
 router.post('/carts', async (req, res)=>{
     const { body } = req;
     try {
-        const newCart = await cartManager.addCart(body);
+        const newCart = await CartManager.create(body);
         res.status(201).json(newCart);
         console.log(newCart);
     } catch (error) {
@@ -32,7 +30,7 @@ router.post('/carts/:cid/product/:pid', async (req, res) => {
     const { cid, pid } = params;
     
     try {
-        const newProductInCart = await cartManager.addProductInCart(parseInt(cid), parseInt(pid));
+        const newProductInCart = await CartManager.addProductInCart(cid, pid);
         res.status(201).json(newProductInCart);
         console.log(newProductInCart);
     } catch (error) {
