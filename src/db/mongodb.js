@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
 
-const URI = 'Su Uri Aqui';
+//adjunto con uri por si acaso
+const URI = 'mongodb+srv://juandagv95:Ag2T6GJadpp7ipgD@cluster0.urmqf9c.mongodb.net/ecommerce';
 
 export const init = async () =>{
     try {
