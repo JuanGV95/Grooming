@@ -1,32 +1,33 @@
 import { Router } from 'express';
-const router = Router();
-
+import productModel from '../dao/models/product.model.js';
 import ProductManager from '../dao/products.manager.js';
-
+import { respuestaPaginada } from '../utils.js';
+const router = Router();
 
 
 router.get('/products', async (req, res) => {
     try {
-        const { query } = req;
-        const { limit } = query;
-        const products = await ProductManager.get();
-
-        if (!limit) {
-            res.status(200).json(products);
-        } else {
-            const result = products.filter((product) => product.id <= parseInt(limit));
-            res.status(201).json(result);
+        const { limit = 10, page = 1, sort, search } = req.query;
+        const criteria = {};
+        //const products = await ProductManager.get();
+        const options = { limit, page };
+        if (sort) {
+            options.sort = { price: sort };
         }
-        console.log(products);
+        if (search) {
+            criteria.category = search;
+        }
+        const result = await productModel.paginate(criteria, options);
+        res.status(200).json(respuestaPaginada({ ...result, sort, search }));
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'Error al obtener los productos.' });
     }
 });
 
-router.get('/products/:pid', async (req, res)  =>{
+router.get('/products/:pid', async (req, res) => {
     const { pid } = req.params;
-    console.log('pid', pid) 
+    console.log('pid', pid)
     try {
         const product = await ProductManager.getById(pid);
 
@@ -74,12 +75,12 @@ router.delete('/products/:pid', async (req, res) => {
     const productId = params.pid;
     const product = await ProductManager.getById(productId);
     console.log('ID del producto que se busca:', productId);
-    
+
     if (!product) {
         res.status(404).json({ message: 'El producto no se encontró' });
         return;
     }
-    
+
     await ProductManager.deleteById(product._id);
     res.status(200).json({ message: 'El producto fue eliminado' });
 });

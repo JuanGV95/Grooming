@@ -34,7 +34,7 @@ socket.on('getProducts', (products) => {
     const productCard = document.createElement("section");
     productCard.className = "card";
     productCard.innerHTML = `
-      <img src="../img/Star_Wars_Logo.svg.png" alt="Imagen de prueba" class="card-img">
+      <img src="../img/${product.thumbnails}">
       <h2>${product.title}</h2>
       <p><span>Categoria</span>: ${product.category}</p>
       <article class="card-price">
@@ -42,12 +42,12 @@ socket.on('getProducts', (products) => {
         <p><span>Stock</span>: ${product.stock}</p>   
       </article>
       <p><span>Cod. producto</span>: ${product.code}</p>
-      <button class="card-boton-borrar" id="deleteProduct${product.id}">Eliminar Producto</button>
+      <button class="card-boton-borrar" id="deleteProduct${product._id}">Eliminar Producto</button>
     `;
     contenedorCard.appendChild(productCard);
   });
   products.forEach(product => {
-    const deleteButton = document.getElementById(`deleteProduct${product.id}`);
+    const deleteButton = document.getElementById(`deleteProduct${product._id}`);
     deleteButton.addEventListener('click', () => {
       confirmarEliminacion(product);
     });
