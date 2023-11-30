@@ -1,10 +1,25 @@
 <div class="encabezado">
    <h1>Catalogo de productos</h1> 
 </div>
-<div id="contenedorCard" class="container">
-<section id="cardSocket" class="card">
+<div class="container">
+{{#each payload}}
+<section class="card">
+<img src="/img/{{thumbnails}}" alt="Imagen de prueba" class="card-img">
+      <h2>{{title}}</h2>
+      <p><span>Categoria</span>: {{category}}</p>
+      <article class="card-price">
+        <p><span>Precio</span>: {{price}}</p>
+        <p><span>Stock</span>: {{stock}}</p>   
+      </article>
+      <p><span>Cod. producto</span>: {{code}}</p>
+      
+      <button class="card-boton-borrar" id="verDetalle${product.id}">Ver detalle</button>
 </section>
+{{/each}}
 </div>
+<section class="pagination">
+   <a href="{{prevLink}}">Prev </a>
+   <a href="{{nextLink}}">Next </a>
+</section>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script src="/socket.io/socket.io.js"></script>
-<script src="js/index.js"></script>
+<script src="/js/products.js"></script>

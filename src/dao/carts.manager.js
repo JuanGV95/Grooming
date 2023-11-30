@@ -24,12 +24,9 @@ export default class CartManager {
 
     static async addProductInCart(cid, pid) {
         try {
-            console.log('Cart ID:', cid);
-        console.log('Product ID:', pid);
             const cart = await CartModel.findById(cid);
             console.log('Cart:', cart);
             const product = await ProductManager.getById(pid);
-            console.log('producto que traje', product);
             console.log('Product:', product);
             if (!product) {
                 throw new Error(`El producto con el id ${pid} no se encuentra.`);
@@ -37,33 +34,32 @@ export default class CartManager {
     
             if (cart) {
                 console.log('cart.products antes de la búsqueda:', cart.products);
+                console.log('pid-extraido', pid);
+                console.log('product_id-extraido', product._id.toString());
                 try {
-                    const productIndex = cart.products.findIndex((p) => p.pid && p.pid.toString() === product._id.toString());
-
-                    console.log('piddddd', pid);
-                    console.log('product_idddddd', product._id.toString());
-                    console.log('productIndex', productIndex);
+                    const existingProduct = cart.products.find((p) => p.product.toString() === product._id.toString());
+    
+                    console.log('existingProduct', existingProduct);
                     console.log('productodebajodelindex', product._id);
     
-                    if (productIndex !== -1) {
-                        cart.products[productIndex].quantity++;
+                    if (existingProduct) {
+                        existingProduct.quantity++;
                     } else {
                         const newProduct = {
-                            pid: product._id,
+                            product: product._id,
                             quantity: 1,
                         };
                         console.log('newProductprobado', newProduct);
                         cart.products.push(newProduct);
                     }
     
-                    
                     console.log('Longitud de cart.products:', cart.products.length);
                     await CartModel.updateOne({ _id: cart._id }, { products: cart.products });
                     console.log('Cart después de la operación:', cart);
                     return cart;
-                } catch (errorInFindIndex) {
-                    console.error('Error en findIndex:', errorInFindIndex);
-                    throw errorInFindIndex;
+                } catch (errorInFind) {
+                    console.error('Error al buscar el producto en el carrito:', errorInFind);
+                    throw errorInFind;
                 }
             } else {
                 throw new Error('El carrito no existe.');
@@ -73,6 +69,7 @@ export default class CartManager {
             throw new Error(`Error al agregar el producto al carrito: ${error.message}`);
         }
     }
+    
     
 
     static async updateProductInCart(cid, pid, quantity) {
@@ -86,10 +83,8 @@ export default class CartManager {
         const productIndex = cart.products.findIndex((p) => p.pid.toString() === pid);
 
         if (productIndex !== -1) {
-            // Si el producto ya está en el carrito, actualiza la cantidad según el parámetro
           cart.products[productIndex].quantity = quantity;
            
-            // Guarda los cambios en el carrito
              await CartModel.updateOne({ _id: cart._id }, { products: cart.products });
 
             console.log('Cart después de la operación:', cart);
@@ -112,17 +107,14 @@ static async updateCart(cid, pid) {
             throw new Error('El carrito no existe');
         }
 
-        // Vaciar el carrito
         cart.products = [];
 
-        // Agregar el nuevo producto
         const newProduct = {
-            pid: product._id,
+            product: product._id,
             quantity: 1,
         };
         cart.products.push(newProduct);
 
-        // Guardar el carrito actualizado en la base de datos
         await cart.save();
 
         console.log('Cart después de la operación:', cart);
@@ -142,7 +134,6 @@ static async updateCart(cid, pid) {
                 throw new Error('El carrito no existe.');
             }
 
-            // Eliminar los productos asociados al carrito
             cart.products = [];
             await cart.save();
 
@@ -163,7 +154,6 @@ static async updateCart(cid, pid) {
             const productIndex = cart.products.findIndex((p) => p.pid.toString() === pid.toString());
 
             if (productIndex !== -1) {
-                // Elimina el producto específico del carrito
                 cart.products.splice(productIndex, 1);
                 await cart.save();
 

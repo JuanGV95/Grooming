@@ -18,7 +18,7 @@ router.get('/products', async (req, res) => {
             criteria.category = search;
         }
         const result = await productModel.paginate(criteria, options);
-        res.status(200).json(respuestaPaginada({ ...result, sort, search }));
+        res.status(200).render('products', respuestaPaginada({ ...result, sort, search }));
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'Error al obtener los productos.' });
