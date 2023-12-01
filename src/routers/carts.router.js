@@ -1,16 +1,25 @@
 import { Router } from 'express';
 
 const router = Router();
-
 import CartManager from '../dao/carts.manager.js';
 
-router.get('/carts/:cid', async (req, res)=>{
-    const{ cid } = req.params;
-    const cart = await CartManager.getById(cid);
-    if(!cart){
-        res.json({ error: 'Carrito no encontrado.' });
-    } else {
-        res.status(201).json(cart);
+router.get('/carts/:cid', async (req, res) => {
+    const { cid } = req.params;
+
+    try {
+        const cart = await CartManager.getById(cid);
+
+        if (!cart) {
+            res.json({ error: 'Carrito no encontrado.' });
+        } else {
+            
+            await cart.populate('products.product');
+
+            res.status(201).render('cart', cart);
+        }
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Error al buscar el carrito.' });
     }
 });
 

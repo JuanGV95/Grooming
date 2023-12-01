@@ -1,4 +1,3 @@
-
 import CartModel from './models/cart.model.js';
 import ProductManager from './products.manager.js';
 
@@ -22,7 +21,7 @@ export default class CartManager {
         }
     }
 
-    static async addProductInCart(cid, pid) {
+    static async addProductInCart(cid, pid, quantity) {
         try {
             const cart = await CartModel.findById(cid);
             console.log('Cart:', cart);
@@ -47,7 +46,7 @@ export default class CartManager {
                     } else {
                         const newProduct = {
                             product: product._id,
-                            quantity: 1,
+                            quantity: quantity,
                         };
                         console.log('newProductprobado', newProduct);
                         cart.products.push(newProduct);
