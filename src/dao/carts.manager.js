@@ -46,7 +46,7 @@ export default class CartManager {
                     } else {
                         const newProduct = {
                             product: product._id,
-                            quantity: quantity,
+                            quantity: quantity ? quantity : 1,
                         };
                         console.log('newProductprobado', newProduct);
                         cart.products.push(newProduct);

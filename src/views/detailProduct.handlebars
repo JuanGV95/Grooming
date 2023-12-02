@@ -1,0 +1,18 @@
+<div class="encabezado">
+   <h1>Detalles del producto</h1> 
+</div>
+<div class="container">
+  <section class="card">
+    <img src="/img/{{thumbnails}}" alt="Imagen de prueba" class="card-img">
+    <h2>{{title}}</h2>
+    <p><span>Categoria</span>: {{category}}</p>
+    <article class="card-price">
+      <p><span>Precio</span>: {{price}}</p>
+      <p><span>Stock</span>: {{stock}}</p>   
+    </article>
+    <p><span>Cod. producto</span>: {{code}}</p>
+    <button class="card-boton-borrar agregarACarrito" data-id="{{_id}}">Agregar al carrito</button>
+  </section>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="/js/products.js"></script>

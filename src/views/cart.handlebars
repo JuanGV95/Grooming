@@ -2,14 +2,14 @@
   
 {{#each products}}
 <section class="card">
-<img src="/img/{{product.thumbnails}}" alt="Imagen de prueba" class="card-img">
+<img src="/img/{{thumbnails}}" alt="Imagen de prueba" class="card-img">
       <h2>{{title}}</h2>
-      <p><span>Categoria</span>: {{products.category}}</p>
+      <p><span>Categoria</span>: {{category}}</p>
       <article class="card-price">
-        <p><span>Precio</span>: {{price.price}}</p>
-        <p><span>Stock</span>: {{this.stock}}</p>   
+        <p><span>Precio</span>: {{price}}</p>
+        <p><span>Stock</span>: {{stock}}</p>   
       </article>
-      <p><span>Cod. producto</span>: {{this.code}}</p>
+      <p><span>Cod. producto</span>: {{code}}</p>
       
 </section>
 {{/each}}

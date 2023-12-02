@@ -14,12 +14,12 @@ router.get('/carts/:cid', async (req, res) => {
         } else {
             
             await cart.populate('products.product');
-
-            res.status(201).render('cart', cart);
+            console.log('cart traido', cart);
+            res.status(201).render('cart', cart );
         }
     } catch (error) {
         console.error(error);
-        res.status(500).json({ error: 'Error al buscar el carrito.' });
+        res.status(500).json({ error: 'Error al buscar el carrito.'});
     }
 });
 
