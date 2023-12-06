@@ -5,8 +5,11 @@ import { respuestaPaginada } from '../utils.js';
 const router = Router();
 
 
+
 router.get('/products', async (req, res) => {
     try {
+        const { user } = req.session;
+        console.log('user', user);
         const { limit = 10, page = 1, sort, search } = req.query;
         const criteria = {};
         //const products = await ProductManager.get();
@@ -18,7 +21,7 @@ router.get('/products', async (req, res) => {
             criteria.category = search;
         }
         const result = await productModel.paginate(criteria, options);
-        res.status(200).render('products', respuestaPaginada({ ...result, sort, search }));
+        res.status(200).render('products', { user, ...respuestaPaginada({ ...result, sort, search }) });
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'Error al obtener los productos.' });

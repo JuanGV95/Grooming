@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "start": "node .",
-    "dev": "nodemon .",
+    "dev": "nodemon --ignore src/sessions .",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
@@ -17,12 +17,16 @@
   "author": "Juan David Gonzalez Velez",
   "license": "MIT",
   "dependencies": {
+    "connect-mongo": "^5.1.0",
+    "cookie-parser": "^1.4.6",
     "express": "^4.18.2",
     "express-handlebars": "^7.1.2",
+    "express-session": "^1.17.3",
     "mongoose": "^8.0.1",
     "mongoose-paginate-v2": "^1.7.4",
     "multer": "^1.4.5-lts.1",
     "nodemon": "^3.0.1",
+    "session-file-store": "^1.5.0",
     "socket.io": "^4.7.2",
     "uuid": "^9.0.1"
   }
