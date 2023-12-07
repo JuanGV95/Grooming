@@ -30,11 +30,6 @@ router.post('/sessions/login', async(req, res) => {
     //return res.status(401).json({ message: 'Correo o contraseña invalidos.' });
     return res.render('error', { title: 'Error ❌', messageError: 'Correo o contraseña invalidos.' });
   }
-
-  //if del admin
-  if (admin.email === email && admin.password === password) {
-    res.redirect('/api/products');
-  }
   
   const {
     first_name,
@@ -79,7 +74,9 @@ router.post('/sessions/register', async (req, res) => {
     email,
     password,
     age,
+    role: email === 'adminCoder@coder.com' && password === 'adminCod3r123' ? 'admin' : 'user',
   });
+  
   //res.status(201).json(user);
   res.redirect('/login');
 });
