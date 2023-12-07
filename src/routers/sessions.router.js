@@ -7,46 +7,60 @@ const admin = {
   first_name: 'Admi',
   last_name: 'Nistrador',
   email: 'adminCoder@coder.com',
-  age: null,
-  role: 'admin',
-  password: 'adminCod3r123', // NO almacenes contraseñas en texto plano en un entorno de producción
+  age: 18,
+  role: 'Admin',
+  password: 'adminCod3r123'
 }
 
+router.post('/sessions/login', async (req, res) => {
+  try {
+    const { body: { email, password } } = req;
 
+    console.log('Login attempt:', { email, password });
 
-router.post('/sessions/login', async(req, res) => {
-  const { body: { email, password } } = req;
+    if (email === admin.email && password === admin.password) {
+      console.log('Admin inició sesión');
+      req.session.user = admin;  // Cambia aquí a req.session.user
+    } else {
+      const user = await UserModel.findOne({ email });
 
-  if (!email || !password) {
-    //return res.status(400).json({ message: 'Todos los campos son requeridos.' });
-    return res.render('error', { title: 'Error ❌', messageError: 'Todos los campos son requeridos.' });
+      console.log('Usuario encontrado en la base de datos:', user);
+
+      if (!email || !password) {
+        //return res.status(400).json({ message: 'Todos los campos son requeridos.' });
+        return res.render('error', { title: 'Error ❌', messageError: 'Todos los campos son requeridos.' });
+      }
+
+      if (!user) {
+        //return res.status(401).json({ message: 'Correo o contraseña invalidos.' });
+        return res.render('error', { title: 'Error ❌', messageError: 'Correo o contraseña invalidos.' });
+      }
+   
+      if (user.password !== password) {
+        //return res.status(401).json({ message: 'Correo o contraseña invalidos.' });
+        return res.render('error', { title: 'Error ❌', messageError: 'Correo o contraseña invalidos.' });
+      }
+
+      console.log('Usuario inició sesión');
+      const { 
+        first_name, 
+        last_name, 
+        age, 
+        role 
+      } = user;
+      req.session.user = { 
+        first_name, 
+        last_name, 
+        email, 
+        age, 
+        role };
+    }
+
+    res.redirect('/api/products');
+  } catch (error) {
+    console.error('Error durante el inicio de sesión:', error);
+    res.render('error', { title: 'Error ❌', messageError: 'Ha ocurrido un error desconocido.' });
   }
-  const user = await UserModel.findOne({ email });
-  if (!user) {
-    //return res.status(401).json({ message: 'Correo o contraseña invalidos.' });
-    return res.render('error', { title: 'Error ❌', messageError: 'Correo o contraseña invalidos.' });
-  }
-  if (user.password !== password) {
-    //return res.status(401).json({ message: 'Correo o contraseña invalidos.' });
-    return res.render('error', { title: 'Error ❌', messageError: 'Correo o contraseña invalidos.' });
-  }
-  
-  const {
-    first_name,
-    last_name,
-    age,
-    role,
-  } = user;
-  req.session.user = {
-    first_name,
-    last_name,
-    email,
-    age,
-    role,
-  };
-
-  //res.status(200).json({ message: 'Session iniciada correctamente.' });
-  res.redirect('/api/products');
 });
 
 router.post('/sessions/register', async (req, res) => {
@@ -65,8 +79,8 @@ router.post('/sessions/register', async (req, res) => {
     !email ||
     !password
   ) {
-   //return  res.status(400).json({ message: 'Todos los campos son requeridos.' });
-   return res.render('error', { title: 'Hello People 🖐️', messageError: 'Todos los campos son requeridos.' });
+    //return  res.status(400).json({ message: 'Todos los campos son requeridos.' });
+    return res.render('error', { title: 'Hello People 🖐️', messageError: 'Todos los campos son requeridos.' });
   }
   const user = await UserModel.create({
     first_name,
@@ -76,7 +90,7 @@ router.post('/sessions/register', async (req, res) => {
     age,
     role: email === 'adminCoder@coder.com' && password === 'adminCod3r123' ? 'admin' : 'user',
   });
-  
+
   //res.status(201).json(user);
   res.redirect('/login');
 });
