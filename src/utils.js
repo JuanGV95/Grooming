@@ -1,11 +1,22 @@
 //import multer from 'multer';
 import path from 'path';
 import url from 'url';
+import  bcrypt from 'bcrypt';
 
 const __filename = url.fileURLToPath(import.meta.url);
 export const __dirname = path.dirname(__filename)
 
 export const URL_BASE = 'http://localhost:8080/api';
+
+export const createHash = async password => {
+  const salt = await bcrypt.genSalt(10);
+  const hashedPassword = await bcrypt.hash(password, salt);
+  return hashedPassword;
+};
+
+//export const createHash = password => bcrypt.hashSync(password, bcrypt.genSaltSync(10));
+
+export const isValidPassword = (password, user) => bcrypt.compareSync(password, user.password);
 
 export const respuestaPaginada = (data, baseUrl = URL_BASE) => {
     return {
