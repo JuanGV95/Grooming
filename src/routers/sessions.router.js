@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import UserModel from '../dao/models/user.model.js';
 import passport from 'passport';
-import { createHash, isValidPassword } from '../utils.js';
+
 
 
 const router = Router();
@@ -16,7 +16,10 @@ const admin = {
 }
 
 
-router.post('/sessions/login', passport.authenticate('login', { failureRedirect: '/login' }), async (req, res) => {
+router.post('/sessions/login', 
+passport.authenticate('login', { failureRedirect: '/login' }), 
+
+async (req, res) => {
   try {
     const { body: { email, password } } = req;
     console.log('admin.password', admin.password)
@@ -24,7 +27,7 @@ router.post('/sessions/login', passport.authenticate('login', { failureRedirect:
 
     if (email === admin.email && password === admin.password) {
       console.log('Admin inició sesión');
-      req.session.user = admin;  
+      req.user = admin;  
     }else {
       const user = await UserModel.findOne({ email });
 
@@ -37,7 +40,7 @@ router.post('/sessions/login', passport.authenticate('login', { failureRedirect:
         age,
         role
       } = user;
-      req.session.user = {
+      req.user = {
         first_name,
         last_name,
         email,
@@ -49,11 +52,13 @@ router.post('/sessions/login', passport.authenticate('login', { failureRedirect:
     res.redirect('/api/products');
   } catch (error) {
     console.error('Error durante el inicio de sesión:', error);
-    res.render('error', { title: 'Error ❌', messageError: 'Ha ocurrido un error desconocido.' });
+   
   }
 });
 
-router.post('/sessions/register', passport.authenticate('register', { failureRedirect: '/register' }), async (req, res) => {
+router.post('/sessions/register', 
+passport.authenticate('register', { failureRedirect: '/register' }), 
+async (req, res) => {
   const {
     body: {
       first_name,
@@ -70,7 +75,7 @@ router.post('/sessions/register', passport.authenticate('register', { failureRed
     !password
   ) {
     //return  res.status(400).json({ message: 'Todos los campos son requeridos.' });
-    return res.render('error', { title: 'Hello People 🖐️', messageError: 'Todos los campos son requeridos.' });
+    return res.render('error', { title: 'Registro', messageError: 'Todos los campos son requeridos.' });
   }
   const user = await UserModel.create({
     first_name,
@@ -95,7 +100,7 @@ router.get('/sessions/me', (req, res) => {
 router.get('/session/logout', (req, res) => {
   req.session.destroy((error) => {
     if (error) {
-      return res.render('error', { title: 'Hello People 🖐️', messageError: error.message });
+      return res.render('error', { title: 'Error', messageError: error.message });
     }
     res.redirect('/login');
   });

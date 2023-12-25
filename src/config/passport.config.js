@@ -1,15 +1,39 @@
 import passport from 'passport';
 import { Strategy as LocalStrategy } from 'passport-local';
 import { Strategy as GithubStrategy } from 'passport-github2';
+import { Strategy as JwtStrategy, ExtractJwt } from 'passport-jwt';
 import UserModel from '../dao/models/user.model.js';
-import { createHash, isValidPassword } from '../utils.js';
+import { createHash, isValidPassword, JWT_SECRET } from '../utils.js';
 
+function cookieExtractor(req){
+  let token = null;
+  if(req && req.signedCookies){
+    token = req.signedCookies['access_token'];
+  }
+
+  return token
+}
 
 export const init = () => {
   const registerOpts = {
     usernameField: 'email',
     passReqToCallback: true,
   };
+  const opts ={
+    secretOrKey: JWT_SECRET,
+    jwtFromRequest: ExtractJwt.fromExtractors([cookieExtractor]) 
+  }
+  passport.use('jwt',new JwtStrategy(opts, (payload, done)=>{
+    const user = payload;
+  if (user) {
+    return done(null, user);
+  } else {
+    return done(null, false, { message: 'Usuario no encontrado' });
+  }
+  }));
+
+
+/*   //Passport con sessiones
   passport.use('register', new LocalStrategy(registerOpts, async (req, email, password, done) => {
     const {
       body: {
@@ -38,7 +62,7 @@ export const init = () => {
     });
     done(null, newUser);
   }));
-
+  //passport con session
   passport.use('login', new LocalStrategy({ usernameField: 'email' }, async (email, password, done) => {
     const user = await UserModel.findOne({ email });
     if (!user) {
@@ -49,7 +73,7 @@ export const init = () => {
       return done(new Error('Correo o contraseña invalidos.'));
     }
     done(null, user);
-  }));
+  })); */
 
   const gitghubOpts = {
     clientID: 'Iv1.cf97d0d4f990e521',
@@ -73,12 +97,13 @@ export const init = () => {
     done(null, newUser)
   }));
 
-  passport.serializeUser((user, done) => {
+ /*  passport.serializeUser((user, done) => {
     done(null, user._id);
   });
 
   passport.deserializeUser(async (uid, done) => { // inflar la session
     const user = await UserModel.findById(uid);
     done(null, user);
-  });
+  }); */
+
 } 

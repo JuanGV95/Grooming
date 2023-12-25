@@ -1,25 +1,29 @@
 import { Router } from 'express';
 import productModel from '../dao/models/product.model.js';
 import ProductManager from '../dao/products.manager.js';
+import passport from 'passport';
 import { respuestaPaginada } from '../utils.js';
 const router = Router();
 
 
 
-router.get('/products', async (req, res) => {
+router.get('/products', passport.authenticate('jwt', { session: false }), async (req, res) => {
     try {
-        const { user } = req.session;
+        const user = req.user;
         console.log('user', user);
+
         const { limit = 10, page = 1, sort, search } = req.query;
         const criteria = {};
-        //const products = await ProductManager.get();
         const options = { limit, page };
+
         if (sort) {
             options.sort = { price: sort };
         }
+
         if (search) {
             criteria.category = search;
         }
+
         const result = await productModel.paginate(criteria, options);
         res.status(200).render('products', { user, ...respuestaPaginada({ ...result, sort, search }) });
     } catch (error) {
@@ -27,6 +31,7 @@ router.get('/products', async (req, res) => {
         res.status(500).json({ error: 'Error al obtener los productos.' });
     }
 });
+
 
 router.get('/products/:pid', async (req, res) => {
     const { pid } = req.params;

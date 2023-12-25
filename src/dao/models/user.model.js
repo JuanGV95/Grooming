@@ -7,8 +7,9 @@ const userSchema = new Schema({
   password: { type: String},
   providerId: { type: String },
   provider: { type: String },
-  role: { type: String, default: 'user' },
-  age: { type: Number, required: false },
+  cart: {type: mongoose.Schema.Types.ObjectId, ref: 'carts'},
+  role: { type: String, default: 'user', enum: ['user', 'admin'] },
+  age: { type: Number },
 }, { timestamps: true });
 
 export default mongoose.model('User', userSchema);

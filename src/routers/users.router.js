@@ -1,7 +1,12 @@
 import { Router } from 'express';
 import UserModel from '../dao/models/user.model.js';
-
+import passport from 'passport';
 const router = Router();
+
+router.get('/users/me', passport.authenticate('jwt', {session: false}), async (req, res)=>{
+  const user = await UserModel.findById(req.user.id);
+  res.status(200).json(user);
+})
 
 router.get('/users', async (req, res, next) => {
   try {
