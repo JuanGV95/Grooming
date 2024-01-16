@@ -1,11 +1,11 @@
 import mongoose from 'mongoose';
+import config from '../config/config.js';
 
-
-//adjunto con uri por si acaso
-export const URI = 'mongodb+srv://juandagv95:Ag2T6GJadpp7ipgD@cluster0.urmqf9c.mongodb.net/ecommerce';
+export const URI = config.mongodbUri;
 
 export const init = async () =>{
     try {
+        const URI = config.mongodbUri;
        await mongoose.connect(URI);
        console.log('Database connected sucssesfully'); 
     } catch (error) {

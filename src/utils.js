@@ -1,20 +1,19 @@
-//import multer from 'multer';
 import path from 'path';
 import url from 'url';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
- 
+import config from './config/config.js';
 
 const __filename = url.fileURLToPath(import.meta.url);
 export const __dirname = path.dirname(__filename)
 
-export const URL_BASE = 'http://localhost:8080/api';
+export const URL_BASE = `http://localhost:${config.port}/api`;
 
 export const createHash = (password) => bcrypt.hashSync(password, bcrypt.genSaltSync(10))
 
 export const isValidPassword = (password, user) => bcrypt.compareSync(password, user.password);
 
-export const JWT_SECRET = 'aVbOcT3X;K2,4TZ!¿p[JW.DT]g:4l@';
+export const JWT_SECRET = config.jwt;
 
 export const createToken = (user) => {
   const {
@@ -65,7 +64,20 @@ export const authMiddleware = roles => (req,res,next) => {
   }
   next();
 }
+
+
+
+
 export const respuestaPaginada = (data, baseUrl = URL_BASE) => {
+  if (!data || !Array.isArray(data.docs)) {
+    // Manejar el caso en que 'data.docs' no esté disponible
+    return {
+        status: 'error',
+        message: 'Datos no disponibles o en formato incorrecto',
+        payload: [],
+        // ... puedes agregar otros campos según sea necesario
+    };
+}
     return {
         //status:success/error
         status: 'success',

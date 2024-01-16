@@ -2,8 +2,8 @@ import { Router } from 'express';
 
 const router = Router();
 import passport from 'passport';
-import CartManager from '../dao/carts.manager.js';
-import { authMiddleware } from '../utils.js';
+import CartManager from '../../dao/carts.manager.js';
+import { authMiddleware } from '../../utils.js';
 
 
 router.post('/carts', 

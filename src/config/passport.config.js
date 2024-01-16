@@ -5,6 +5,7 @@ import { Strategy as JwtStrategy, ExtractJwt } from 'passport-jwt';
 import UserModel from '../dao/models/user.model.js';
 import { createHash, isValidPassword, JWT_SECRET } from '../utils.js';
 
+//JwtStrategy con cookies
 function cookieExtractor(req){
   let token = null;
   if(req && req.signedCookies){
@@ -31,6 +32,30 @@ export const init = () => {
     return done(null, false, { message: 'Usuario no encontrado' });
   }
   }));
+
+
+  const gitghubOpts = {
+    clientID: 'Iv1.cf97d0d4f990e521',
+    clientSecret: '6634b032517e25639f63fcf4906b16aa0fefb47b',
+    callbackURL: 'http://localhost:8080/api/sessions/github/callback',
+  }
+  passport.use('github', new GithubStrategy(gitghubOpts, async (accessToken, refreshToken, profile, done) => {
+    const email = profile._json.email;
+    let user = await UserModel.findOne({ email });
+    if (user) {
+      return done(null, user);
+    }
+    user = {
+      first_name: profile._json.name,
+      last_name: '',
+      email,
+      password: '',
+      age: 18,
+    };
+    const newUser = await UserModel.create(user);
+    done(null, newUser)
+  }));
+
 
 
 /*   //Passport con sessiones
@@ -75,29 +100,8 @@ export const init = () => {
     done(null, user);
   })); */
 
-  const gitghubOpts = {
-    clientID: 'Iv1.cf97d0d4f990e521',
-    clientSecret: '6634b032517e25639f63fcf4906b16aa0fefb47b',
-    callbackURL: 'http://localhost:8080/api/sessions/github/callback',
-  }
-  passport.use('github', new GithubStrategy(gitghubOpts, async (accessToken, refreshToken, profile, done) => {
-    const email = profile._json.email;
-    let user = await UserModel.findOne({ email });
-    if (user) {
-      return done(null, user);
-    }
-    user = {
-      first_name: profile._json.name,
-      last_name: '',
-      email,
-      password: '',
-      age: 18,
-    };
-    const newUser = await UserModel.create(user);
-    done(null, newUser)
-  }));
 
- /*  passport.serializeUser((user, done) => {
+   /*  passport.serializeUser((user, done) => {
     done(null, user._id);
   });
 
@@ -107,3 +111,5 @@ export const init = () => {
   }); */
 
 } 
+  
+

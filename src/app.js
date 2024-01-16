@@ -1,26 +1,29 @@
 import express from 'express';
 import handlebars from 'express-handlebars';
-import sessions from 'express-session';
+import sessions from 'express-session'; //solo para sessions
 import passport  from 'passport';
 import path from 'path';
-import MongoStore from 'connect-mongo';
+import MongoStore from 'connect-mongo'; //solo para sessions
+import config from './config/config.js';
 import cookieParser from 'cookie-parser';
+
 
 //import configs
 import { __dirname } from './utils.js';
-import { URI } from './db/mongodb.js';
+import { URI } from './db/mongodb.js'; //solo para sessions
 import {init as initPassport} from './config/passport.config.js';
 //import de ROUTERS
-import productsRouter from './routers/products.router.js';
-import cartsRouter from './routers/carts.router.js';
+import productsRouter from './routers/api/products.router.js';
+import cartsRouter from './routers/api/carts.router.js';
 import indexRouter from './routers/index.router.js';
 import realtimeproducts from './routers/realTimeProducts.router.js';
-import userRouter from './routers/users.router.js';
-import authRouter from './routers/auth.router.js';
+import userRouter from './routers/api/users.router.js';
+import authRouter from './routers/api/auth.router.js';
 const app = express();
 
-const SESSION_SECRET = '|7@3BBY5jH:@zFQIg_v47HkKP5S#p&Uc';
+// const SESSION_SECRET = '|7@3BBY5jH:@zFQIg_v47HkKP5S#p&Uc'; solo para session
 
+//solo para sessions
 /* app.use(sessions({
      store: MongoStore.create({
        mongoUrl: URI,
@@ -33,7 +36,7 @@ const SESSION_SECRET = '|7@3BBY5jH:@zFQIg_v47HkKP5S#p&Uc';
    })); */
 
 //config 🍪🍪
-const COOKIE_SECRET = 'aVbOcT3X;K2,4TZ!¿p[JW.DT]g:4l@'
+const COOKIE_SECRET = config.cookie;
 app.use(cookieParser(COOKIE_SECRET))
 
 //config express
@@ -47,8 +50,7 @@ app.set('view engine', 'handlebars');
 //Passport Config
 initPassport();
 app.use(passport.initialize());
-//app.use(passport.session());
-
+//app.use(passport.session()); //solo para sessions
 app.use('/', indexRouter, realtimeproducts);
 
 app.use('/api', productsRouter, cartsRouter, userRouter, authRouter);

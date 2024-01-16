@@ -1,7 +1,7 @@
 import {  Router  } from 'express';
-import UserModel from '../dao/models/user.model.js';
+import UserModel from '../../dao/models/user.model.js';
 import passport from 'passport';
-import {createHash, isValidPassword, createToken} from '../utils.js';
+import {createHash, isValidPassword, createToken} from '../../utils.js';
 
 const router = Router();
 
@@ -37,17 +37,18 @@ router.post('/auth/register', async (req, res)=>{
         password: createHash(password),
         age,
     })
-    res.status(200).json(user)
+    res.redirect('/login');
 }) 
 
 router.post('/auth/login',
-passport.authenticate('jwt', {session:false}),
+//passport.authenticate('jwt', {session:false}),
 async (req, res) => {
     const { email, password } = req.body;
     if (!email || !password) {
       return res.status(401).json({ message: 'Correo o contraseña son invalidos' });
     }
     const user = await UserModel.findOne({ email });
+    console.log('user', user);
     if (!user) {
       return res.status(401).json({ message: 'Correo o contraseña son invalidos' });
     }
