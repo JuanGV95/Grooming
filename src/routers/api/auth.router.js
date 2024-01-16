@@ -41,7 +41,7 @@ router.post('/auth/register', async (req, res)=>{
 }) 
 
 router.post('/auth/login',
-//passport.authenticate('jwt', {session:false}),
+passport.authenticate('jwt', {session:false}),
 async (req, res) => {
     const { email, password } = req.body;
     if (!email || !password) {

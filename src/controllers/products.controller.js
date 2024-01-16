@@ -21,6 +21,7 @@ export default class ProductController {
     
             const options = { limit, page, sort: sortOptions };
             const result = await ProductService.getAll(criteria, options);
+            console.log(result); // Agregar esto para depurar
             res.status(200).render('products', { user, ...respuestaPaginada(result) });
         } catch (error) {
             console.error(error);
