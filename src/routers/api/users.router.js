@@ -37,36 +37,31 @@ router.post('/users/', async (req, res, next) => {
 
     // Validar campos requeridos
     if (!first_name || !last_name || !email || !password || !age) {
-        return res.status(400).json({ message: 'Todos los campos son requeridos' });
+      return res.status(400).json({ message: 'Todos los campos son requeridos' });
     }
 
     // Verificar si el usuario ya existe
     const existingUser = await UserModel.findOne({ email });
     if (existingUser) {
-        return res.status(400).json({ message: `Usuario ya registrado con el correo ${email}` });
+      return res.status(400).json({ message: `Usuario ya registrado con el correo ${email}` });
     }
-
-    // Crear un ObjectId vacío para el carrito (esto podría cambiarse según la lógica de tu aplicación)
-    const emptyCartId = new mongoose.Types.ObjectId();
 
     // Crear el usuario
     const newUser = await UserModel.create({
-        first_name,
-        last_name,
-        email,
-        password: createHash(password), // Hash del password
-        providerId: "",
-        provider: "No provider",
-        cart: emptyCartId,
-        role: 'user',
-        age
+      first_name,
+      last_name,
+      email,
+      password: createHash(password), // Hash del password
+      providerId: "",
+      provider: "No provider",
+      role: 'user',
+      age
     });
 
-    // Redirigir al usuario
-    res.redirect('/login');
-} catch (error) {
+    res.status(201).json(newUser);
+  } catch (error) {
     next(error);
-}
+  }
 });
 
 router.put('/users/:uid', async (req, res, next) => {
