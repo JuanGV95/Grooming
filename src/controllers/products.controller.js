@@ -5,24 +5,25 @@ export default class ProductController {
     static async getProducts(req, res) {
         try {
             const user = req.user;
-            const { limit = 10, page = 1, sort, search } = req.query;
-            const criteria = {};
-    
-            if (search) {
-                criteria.category = search; // Asegúrate de que este criterio corresponda a tu esquema de datos
-            }
-    
-            // Manejar el valor de 'sort'
-            let sortOptions = {};
-            if (sort) {
-                // Asumiendo que 'sort' es un string como 'asc' o 'desc'
-                sortOptions = { price: sort };
-            }
-    
-            const options = { limit, page, sort: sortOptions };
+        console.log('user', user);
+
+        const { limit = 10, page = 1, sort, search } = req.query;
+        const criteria = {};
+        const options = { limit, page };
+
+        if (sort) {
+            options.sort = { price: sort };
+        }
+
+        if (search) {
+            criteria.category = search;
+        }
             const result = await ProductService.getAll(criteria, options);
-            console.log(result); // Agregar esto para depurar
-            res.status(200).render('products', { user, ...respuestaPaginada(result) });
+
+            // Tu código existente sigue aquí
+            res.status(200).render('products', { user, ...respuestaPaginada(result, sort, search) });
+            
+
         } catch (error) {
             console.error(error);
             res.status(500).json({ error: 'Error al obtener los productos.' });

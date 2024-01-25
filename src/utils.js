@@ -54,50 +54,45 @@ export const verifyToken = (token)=>{
    });
 }
 
-export const authMiddleware = roles => (req,res,next) => { 
+export const authMiddleware = roles => (req, res, next) => { 
   const { user } = req;
-  if (!user){
-    return res.status(401).json({message:'unauthorized'});
+  if (!user) {
+    return res.status(401).json({ message: 'Unauthorized' });
   }
-  if(roles.includes(user.role)) {
-    return res.status(403).json({message: 'forbiden'});
+  if (!roles.includes(user.role)) {
+    return res.status(403).json({ message: 'Forbidden' });
   }
   next();
-}
+};
+
+
 
 
 
 
 export const respuestaPaginada = (data, baseUrl = URL_BASE) => {
-  if (!data || !Array.isArray(data.docs)) {
-    // Manejar el caso en que 'data.docs' no esté disponible
-    return {
-        status: 'error',
-        message: 'Datos no disponibles o en formato incorrecto',
-        payload: [],
-        // ... puedes agregar otros campos según sea necesario
-    };
-}
-    return {
-        //status:success/error
-        status: 'success',
-        //payload: Resultado de los productos solicitados
-        payload: data.docs.map((doc) => doc.toJSON()),
-        //totalPages: Total de páginas
-        totalPages: data.totalPages,
-        //prevPage: Página anterior
-        prevPage: data.prevPage,
-        //nextPage: Página siguiente
-        nextPage: data.nextPage,
-        //page: Página actual
-        page: data.page,
-        //hasPrevPage: Indicador para saber si la página previa existe
-        hasPrevPage: data.hasPrevPage,
-        //hasNextPage: Indicador para saber si la página siguiente existe.
-        hasNextPage: data.hasNextPage,
-        //prevLink: Link directo a la página previa (null si hasPrevPage=false)
-        prevLink: data.hasPrevPage ? `${baseUrl}/products?limit=${data.limit}&page=${data.prevPage}` : null,
-        //nextLink: Link directo a la página siguiente (null si hasNextPage=false)
-        nextLink: data.hasNextPage ? `${baseUrl}/products?limit=${data.limit}&page=${data.nextPage}` : null,
-      }; 
+  return {
+    //status:success/error
+    status: 'success',
+    //payload: Resultado de los productos solicitados
+    payload: data.products.map(doc => doc.toJSON ? doc.toJSON() : doc),
+    //totalPages: Total de páginas
+    totalPages: data.totalPages,
+    //prevPage: Página anterior
+    prevPage: data.prevPage,
+    //nextPage: Página siguiente
+    nextPage: data.nextPage,
+    //page: Página actual
+    page: data.page,
+    //hasPrevPage: Indicador para saber si la página previa existe
+    hasPrevPage: data.hasPrevPage,
+    //hasNextPage: Indicador para saber si la página siguiente existe.
+    hasNextPage: data.hasNextPage,
+    //prevLink: Link directo a la página previa (null si hasPrevPage=false)
+    prevLink: data.hasPrevPage ? `${baseUrl}/products?limit=${data.limit}&page=${data.prevPage}` : null,
+    //nextLink: Link directo a la página siguiente (null si hasNextPage=false)
+    nextLink: data.hasNextPage ? `${baseUrl}/products?limit=${data.limit}&page=${data.nextPage}` : null,
+  }; 
+
+    
 }

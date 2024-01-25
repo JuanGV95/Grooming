@@ -1,6 +1,7 @@
 //Servidor
 import { Server } from 'socket.io'
-
+import pkg from 'jsonwebtoken';
+const {jwt} = pkg;
 import ProductManager from './dao/products.manager.js';
 import MessageModel from './dao/models/message.model.js';
 let io;
@@ -8,6 +9,21 @@ let io;
 export const init = (httpServer) => {
 
   io = new Server(httpServer);
+
+  io.use((socket, next) => {
+    const token = socket.handshake.auth.token; // Asegúrate de que el cliente envíe el token de esta manera
+    if (!token) {
+      return next(new Error('Authentication error - No token provided'));
+    }
+    console.log('token', token);
+    jwt.verify(token, process.env.JWT_SECRET, function(err, decoded) {
+      if (err) {
+        return next(new Error('Authentication error'));
+      }
+      socket.user = decoded; // Guarda la información del usuario en el socket
+      next();
+    });
+  });
 
   io.on('connection', async (socketClient) => {
 
@@ -44,9 +60,13 @@ export const init = (httpServer) => {
     socketClient.emit('update-messages', messages);
 
     socketClient.on('new-message', async (msg) => {
+      if (socketClient.user.role !== 'user') {
+        return; // No permitir si no es un usuario normal
+      }
       await MessageModel.create(msg);
       const messages = await MessageModel.find({});
       io.emit('update-messages', messages);
+      console.log('messages', messages);
     })
 
   })

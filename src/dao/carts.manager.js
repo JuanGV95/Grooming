@@ -165,7 +165,51 @@ static async updateCart(cid, pid) {
         }
     }
 
-
+    static async purchaseCart(cid) {
+        try {
+            const cart = await CartModel.findById(cid).populate('products.product');
+            if (!cart) {
+                throw new Error('El carrito no existe.');
+            }
+    
+            let productosNoProcesados = [];
+            let productosProcesados = [];
+    
+            // Verificar stock de cada producto en el carrito
+            for (const item of cart.products) {
+                if (item.product.stock < item.quantity) {
+                    productosNoProcesados.push(item.product._id);
+                } else {
+                    productosProcesados.push(item);
+                }
+            }
+    
+            // Si todos los productos tienen suficiente stock
+            if (productosNoProcesados.length === 0) {
+                // Actualizar stock y generar ticket
+                for (const item of productosProcesados) {
+                    await ProductManager.updateProductStock(item.product._id, item.product.stock - item.quantity);
+                    // Aquí podrías añadir la lógica para generar el ticket
+                }
+    
+                // Limpieza del carrito
+                cart.products = [];
+                await cart.save();
+    
+                return { message: 'Compra finalizada con éxito', ticket: cart };
+            } else {
+                // Actualizar el carrito para eliminar los productos procesados
+                cart.products = cart.products.filter(item => productosNoProcesados.includes(item.product._id));
+                await cart.save();
+    
+                return { error: 'Algunos productos no tienen suficiente stock', productosNoProcesados };
+            }
+        } catch (error) {
+            console.error('Error al realizar la compra:', error.message);
+            throw error;
+        }
+    }
+    
 }
 
 

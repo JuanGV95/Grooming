@@ -3,7 +3,10 @@ import app from './app.js';
 import { init as initSocket } from './socket.js';
 import { init } from './db/mongodb.js';
 import config from './config/config.js';
+
+if(config.persistence === 'mongodb'){
 await init();
+}
 
 const server = http.createServer(app);
 

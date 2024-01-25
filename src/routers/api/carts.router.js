@@ -90,7 +90,9 @@ router.put('/carts/:cid/products/:pid', async (req, res) => {
     }
 });
 
-router.post('/carts/:cid/products/:pid', async (req, res) => {
+router.post('/carts/:cid/products/:pid',
+passport.authenticate('jwt', {session: false}),
+authMiddleware(['user']), async (req, res) => {
     const { params } = req;
     const { cid, pid } = params;
     
@@ -101,6 +103,18 @@ router.post('/carts/:cid/products/:pid', async (req, res) => {
         res.status(400).json({ error: error.message });
     }
 });
+
+router.post('/carts/:cid/purchase',
+passport.authenticate('jwt', {session: false}),
+authMiddleware(['user']), async (req, res) => {
+    try {
+        const result = await CartManager.purchaseCart(req.params.cid);
+        res.json({ message: result });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
 router.delete('/carts/:cid/products/:pid', async (req, res) => {
     const { params } = req;
     const { cid, pid } = params;
