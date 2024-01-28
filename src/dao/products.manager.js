@@ -30,4 +30,27 @@ export default class ProductManager{
         console.log(`Producto eliminado correctamente (${pid})`);
     }
 
+    static async updateProductStock(productId, newStock) {
+        try {
+            console.log(`Actualizando stock del producto ${productId} a ${newStock}`);
+            
+            const product = await ProductModel.findByIdAndUpdate(
+                productId,
+                { $set: { stock: newStock } },
+                { new: true } // Retorna el documento actualizado
+            );
+    
+            if (!product) {
+                throw new Error('Producto no encontrado');
+            }
+    
+            console.log(`Stock actualizado: ${product}`);
+            return product;
+        } catch (error) {
+            console.error('Error al actualizar el stock del producto:', error.message);
+            throw error;
+        }
+    }
+    
+
 }

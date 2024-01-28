@@ -63,7 +63,9 @@ async (req, res) => {
     res
       .cookie('access_token', token, { maxAge: 1000 * 60 * 30, httpOnly: true, signed: true })
       .status(200)
-      .json({ message: 'Correct access'}); 
+      .json({ message: 'Correct access',
+              cartId: user.cart
+    }); 
   
     
   });

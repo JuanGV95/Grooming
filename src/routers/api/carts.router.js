@@ -1,5 +1,4 @@
 import { Router } from 'express';
-
 const router = Router();
 import passport from 'passport';
 import CartManager from '../../dao/carts.manager.js';
@@ -105,14 +104,16 @@ authMiddleware(['user']), async (req, res) => {
 });
 
 router.post('/carts/:cid/purchase',
-passport.authenticate('jwt', {session: false}),
-authMiddleware(['user']), async (req, res) => {
-    try {
-        const result = await CartManager.purchaseCart(req.params.cid);
-        res.json({ message: result });
-    } catch (error) {
-        res.status(500).json({ error: error.message });
-    }
+    passport.authenticate('jwt', {session: false}),
+    authMiddleware(['user']), 
+    async (req, res) => {
+        try {
+            const purchaserId = req.user.id; // Obteniendo el ID del usuario autenticado
+            const result = await CartManager.purchaseCart(req.params.cid, purchaserId);
+            res.status(200).json({ message: result });
+        } catch (error) {
+            res.status(500).json({ error: error.message });
+        }
 });
 
 router.delete('/carts/:cid/products/:pid', async (req, res) => {

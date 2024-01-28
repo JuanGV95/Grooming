@@ -1,4 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
+    const userCartId = localStorage.getItem('cart');
+
     // Agrega el evento después de que la página esté completamente cargada
     const buttons = document.querySelectorAll('.verDetalle');
     const buttonsAdd = document.querySelectorAll('.agregarACarrito');
@@ -8,7 +10,6 @@ document.addEventListener('DOMContentLoaded', () => {
             event.preventDefault();
             const productId = button.getAttribute('data-id');
             alert(`Detalles del producto con ID: ${productId}`);
-            // Redirige a la ruta del producto con el ID correspondiente
             window.location.href = `/api/products/${productId}`;
         });
     });
@@ -16,23 +17,28 @@ document.addEventListener('DOMContentLoaded', () => {
     buttonsAdd.forEach(button => {
         button.addEventListener('click', async (event) => {
             event.preventDefault();
+
+            if (!userCartId) {
+                alert('Debes iniciar sesión para agregar productos al carrito.');
+                // Opcional: Redirige al usuario a la página de inicio de sesión
+                return;
+            }
+
             const productId = button.getAttribute('data-id');
             alert(`Agregarás el producto con ID: ${productId}`);
 
-            // Realiza la solicitud POST para agregar el producto al carrito
             try {
-                const response = await fetch(`/api/carts/655983d09e8e817f3c803a05/products/${productId}`, {
+                const response = await fetch(`/api/carts/${userCartId}/products/${productId}`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
-                        // Agrega otros encabezados según sea necesario
                     },
-                    // Puedes enviar datos adicionales en el cuerpo si es necesario
-                     body: JSON.stringify({ quantity: 1 }),
+                    body: JSON.stringify({ quantity: 1 }),
                 });
 
                 if (response.ok) {
                     alert('Producto agregado al carrito exitosamente.');
+                    // Opcional: Actualizar la interfaz de usuario aquí
                 } else {
                     alert('Error al agregar el producto al carrito.');
                 }

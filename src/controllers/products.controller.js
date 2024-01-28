@@ -19,8 +19,6 @@ export default class ProductController {
             criteria.category = search;
         }
             const result = await ProductService.getAll(criteria, options);
-
-            // Tu código existente sigue aquí
             res.status(200).render('products', { user, ...respuestaPaginada(result, sort, search) });
             
 
@@ -71,6 +69,29 @@ export default class ProductController {
         res.status(200).json(updatedProduct);
     }
 
+    static async updateProductStock(productId, newStock) {
+        try {
+            console.log(`Actualizando stock del producto ${productId} a ${newStock}`);
+            
+            const product = await ProductModel.findByIdAndUpdate(
+                productId,
+                { $set: { stock: newStock } },
+                { new: true } 
+            );
+    
+            if (!product) {
+                throw new Error('Producto no encontrado');
+            }
+    
+            console.log(`Stock actualizado: ${product}`);
+            return product;
+        } catch (error) {
+            console.error('Error al actualizar el stock del producto:', error.message);
+            throw error;
+        }
+    }
+    
+    
     static async deleteProduct(req, res) {
         const { params } = req;
         const productId = params.pid;
@@ -84,4 +105,6 @@ export default class ProductController {
         await ProductManager.deleteById(product._id);
         res.status(200).json({ message: 'El producto fue eliminado' });
     }
+
+
 }

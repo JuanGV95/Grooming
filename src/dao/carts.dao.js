@@ -165,5 +165,63 @@ static async updateCart(cid, pid) {
         }
     }
 
+    static async purchaseCart(cid) {
+        try {
+            console.log(`Iniciando proceso de compra para el carrito: ${cid}`);
+            const cart = await CartModel.findById(cid).populate('products.product');
+            if (!cart) {
+                throw new Error('El carrito no existe.');
+            }
+    
+            let productosNoProcesados = [];
+            let productosProcesados = [];
+    
+            console.log(`Verificando stock de los productos en el carrito: ${cart._id}`);
+            // Verificar stock de cada producto en el carrito
+            for (const item of cart.products) {
+                if (item.product.stock < item.quantity) {
+                    productosNoProcesados.push(item.product._id);
+                } else {
+                    productosProcesados.push(item);
+                }
+            }
+    
+            console.log(`Productos procesados: ${productosProcesados.length}`);
+            console.log(`Productos no procesados: ${productosNoProcesados.length}`);
+    
+            // Actualizar stock de los productos procesados
+            for (const item of productosProcesados) {
+                console.log(`Actualizando stock del producto: ${item.product._id}`);
+                await ProductManager.updateProductStock(item.product._id, item.product.stock - item.quantity);
+                // Aquí podrías añadir la lógica para generar el ticket de cada producto procesado
+            }
+    
+            // Si hay productos no procesados, actualizar el carrito
+            if (productosNoProcesados.length > 0) {
+                console.log(`Actualizando carrito para eliminar productos no procesados`);
+                cart.products = cart.products.filter(item => !productosNoProcesados.includes(item.product._id));
+                await cart.save();
+    
+                return {
+                    message: 'Compra parcialmente exitosa. Algunos productos no tienen suficiente stock',
+                    ticket: cart, // Incluso con productos no procesados, devolver ticket de lo procesado
+                    productosNoProcesados
+                };
+            } else {
+                // Limpieza del carrito si todos los productos fueron procesados
+                console.log(`Limpieza del carrito después de procesar todos los productos`);
+                cart.products = [];
+                await cart.save();
+    
+                return { message: 'Compra finalizada con éxito', ticket: cart };
+            }
+        } catch (error) {
+            console.error('Error al realizar la compra:', error.message);
+            throw error;
+        }
+    }
+    
+    
+
 
 }

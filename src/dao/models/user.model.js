@@ -22,7 +22,7 @@ userSchema.post('save', async function (user, next) {
     try {
       const newCart = await cartModel.create({});
       user.cart = newCart._id;
-      await user.save({ validateBeforeSave: false }); // Guarda el usuario con el ID del carrito
+      await user.save({ validateBeforeSave: false }); 
     } catch (error) {
       next(error);
     }
