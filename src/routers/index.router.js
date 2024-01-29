@@ -1,4 +1,7 @@
 import { Router } from 'express';
+import EmailService from '../services/email.service.js';
+
+
 const router = Router();
 
 router.get('/', (req, res) => {
@@ -23,5 +26,19 @@ router.get('/profile', (req, res) => {
 router.get('/chat', (req, res) => {
     res.render('chat', { title: 'Grooming Chat' });
 });
+
+router.get('/mail', async (req, res) => {
+  const emailService = EmailService.getInstance();
+  const result = await emailService.sendEmail(
+    'juandagv@gmail.com',
+    'Hola, tamos probando esta vaina jeje',
+    `<div>
+      <h1>Hola Juan 😁</h1>  
+    </div>`,
+    []
+  );
+  res.status(200).json(result);
+});
+
 
 export default router;
