@@ -1,9 +1,11 @@
 import {  Router  } from 'express';
 import UserModel from '../../dao/models/user.model.js';
 import passport from 'passport';
-import {createHash, isValidPassword, createToken} from '../../utils.js';
+import {createHash, isValidPassword, createToken} from '../../utils/utils.js';
 import UserDto from '../../dto/user.dto.js';
-
+import { CustomError } from '../../utils/customError.js';
+import { generatorUserError } from '../../utils/causeMessageError.js';
+import EnumsError from '../../utils/enumsError.js';
 const router = Router();
 
 router.post('/auth/register', async (req, res)=>{
@@ -23,7 +25,17 @@ router.post('/auth/register', async (req, res)=>{
         !password ||
         !age
     ) { 
-       return res.status(400).json({message: 'Todos los campos son requeridos'}) 
+      CustomError.create({
+        name: 'Invalid data user',
+        cause: generatorUserError({
+          first_name,
+          last_name,
+          email,
+          age,
+        }),
+        message: 'Ocurrio un error mientras intentamos crear un nuevo usuario 😱',
+        code: EnumsError.BAD_REQUEST_ERROR,
+      }) 
     }
     let user = await UserModel.findOne({  email  });
 

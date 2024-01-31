@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import EmailService from '../services/email.service.js';
-
+import { generateProduct } from '../utils/utils.js'
 
 const router = Router();
 
@@ -40,5 +40,12 @@ router.get('/mail', async (req, res) => {
   res.status(200).json(result);
 });
 
+router.get('/mockingproducts', (req, res) => {
+  const products = [];
+  for (let index = 0; index < 100; index++) {
+    products.push(generateProduct());
+  }
+  res.status(200).json(products);
+});
 
 export default router;

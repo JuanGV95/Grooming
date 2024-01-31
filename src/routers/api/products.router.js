@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import passport from 'passport';
 import ProductController from '../../controllers/products.controller.js';
-import { authMiddleware } from '../../utils.js';
+import { authMiddleware } from '../../utils/utils.js';
 
 
 const router = Router();
@@ -10,7 +10,7 @@ router.get('/products', passport.authenticate('jwt', { session: false }), Produc
 
 router.get('/products/:pid', ProductController.getProductById);
 
-router.post('/products', authMiddleware(['admin']), ProductController.createProduct);
+router.post('/products',passport.authenticate('jwt', { session: false }), authMiddleware(['admin']), ProductController.createProduct);
 
 router.put('/products/:pid', authMiddleware(['admin']), ProductController.updateProduct);
 

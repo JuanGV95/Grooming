@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import UserModel from '../../dao/models/user.model.js';
-import {createHash} from '../../utils.js';
+import {createHash} from '../../utils/utils.js';
 import passport from 'passport';
 const router = Router();
 
@@ -51,7 +51,7 @@ router.post('/users/', async (req, res, next) => {
       first_name,
       last_name,
       email,
-      password: createHash(password), // Hash del password
+      password: createHash(password),
       providerId: "",
       provider: "No provider",
       role: 'user',

@@ -1,6 +1,9 @@
-import { respuestaPaginada } from '../utils.js';
+import { respuestaPaginada } from '../utils/utils.js';
 import ProductManager from '../dao/products.manager.js';
 import ProductService from '../services/products.service.js';
+import { CustomError } from '../utils/customError.js';
+import { generatorProductError } from '../utils/causeMessageError.js';
+import EnumsError from '../utils/enumsError.js';
 export default class ProductController {
     static async getProducts(req, res) {
         try {
@@ -45,14 +48,26 @@ export default class ProductController {
     }
 
     static async createProduct(req, res) {
-        const { body } = req;
-
-        try {
+        const {body} = req;
+            if(
+                !body.title ||
+                !body.description ||
+                !body.price ||
+                !body.status ||
+                !body.category ||
+                !body.thumbnails ||
+                !body.code ||
+                !body.stock 
+            ) { 
+              CustomError.create({
+                name: 'Invalid product data',
+                cause: generatorProductError(body),
+                message: 'Ocurrio un error mientras intentamos crear un nuevo producto 😱',
+                code: EnumsError.BAD_REQUEST_ERROR,
+              }) 
+            }
             const newProduct = await ProductManager.create(body);
             res.status(201).json(newProduct);
-        } catch (error) {
-            res.status(400).json({ error: error.message });
-        }
     }
 
     static async updateProduct(req, res) {

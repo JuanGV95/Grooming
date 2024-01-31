@@ -9,7 +9,7 @@ import cookieParser from 'cookie-parser';
 
 
 //import configs
-import { __dirname } from './utils.js';
+import { __dirname } from './utils/utils.js';
 import { URI } from './db/mongodb.js'; //solo para sessions
 import {init as initPassport} from './config/passport.config.js';
 //import de ROUTERS

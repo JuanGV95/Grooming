@@ -2,10 +2,12 @@ import path from 'path';
 import url from 'url';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import config from './config/config.js';
+import config from '../config/config.js';
+import { faker } from '@faker-js/faker';
+
 
 const __filename = url.fileURLToPath(import.meta.url);
-export const __dirname = path.dirname(__filename)
+export const __dirname = path.dirname(path.dirname(__filename));
 
 export const URL_BASE = `http://localhost:${config.port}/api`;
 
@@ -92,3 +94,18 @@ export const respuestaPaginada = (data, baseUrl = URL_BASE) => {
 
     
 }
+
+//Moking products 
+
+export const generateProduct = () => {
+  return {
+    id: faker.database.mongodbObjectId(),
+    title: faker.commerce.productName(),
+    description: faker.lorem.paragraph(),
+    code: faker.string.alphanumeric({ length: 10 }),
+    price: faker.commerce.price(),
+    category: faker.commerce.department(),
+    stock: faker.number.int({ min: 10000, max: 99999 }),
+    thumbnails: faker.image.url(),
+  }
+};
