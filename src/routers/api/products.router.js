@@ -10,10 +10,10 @@ router.get('/products', passport.authenticate('jwt', { session: false }), Produc
 
 router.get('/products/:pid', ProductController.getProductById);
 
-router.post('/products',passport.authenticate('jwt', { session: false }), authMiddleware(['admin']), ProductController.createProduct);
+router.post('/products', passport.authenticate('jwt', { session: false }), authMiddleware(['admin']), ProductController.createProduct);
 
-router.put('/products/:pid', authMiddleware(['admin']), ProductController.updateProduct);
+router.put('/products/:pid', passport.authenticate('jwt', { session: false }), authMiddleware(['admin']), ProductController.updateProduct);
 
-router.delete('/products/:pid', authMiddleware(['admin']), ProductController.deleteProduct);
+router.delete('/products/:pid', passport.authenticate('jwt', { session: false }), authMiddleware(['admin']), ProductController.deleteProduct);
 
 export default router;

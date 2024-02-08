@@ -6,7 +6,7 @@ import path from 'path';
 import MongoStore from 'connect-mongo'; //solo para sessions
 import config from './config/config.js';
 import cookieParser from 'cookie-parser';
-
+import { addLogger } from './config/logger.js';
 
 //import configs
 import { __dirname } from './utils/utils.js';
@@ -39,6 +39,8 @@ const app = express();
 const COOKIE_SECRET = config.cookie;
 app.use(cookieParser(COOKIE_SECRET))
 
+//Logger config
+app.use(addLogger);
 //config express
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));

@@ -48,4 +48,13 @@ router.get('/mockingproducts', (req, res) => {
   res.status(200).json(products);
 });
 
+router.get('/loggerTest', (req, res) =>{
+  req.logger.debug('Hola desde el request index home 😁 (debug)');
+  req.logger.info('Hola desde el request index home 😁 (info)');
+  req.logger.warning('Hola desde el request index home 😁 (warn)');
+  req.logger.error('Hola desde el request index home 😁 (error)');
+  req.logger.fatal('Hola desde el request index home 😁 (fatal)');
+  res.status(200).json({ message: "Logger test" });
+})
+
 export default router;

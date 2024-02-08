@@ -1,5 +1,5 @@
 import { respuestaPaginada } from '../utils/utils.js';
-import ProductManager from '../dao/products.manager.js';
+import ProductManager from '../dao/products.dao.js';
 import ProductService from '../services/products.service.js';
 import { CustomError } from '../utils/customError.js';
 import { generatorProductError } from '../utils/causeMessageError.js';
