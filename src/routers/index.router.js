@@ -23,6 +23,17 @@ router.get('/profile', (req, res) => {
     res.render('register', { title: 'Registro' });
   });
 
+  router.get('/recovery/:token', (req, res) => {
+    const token = req.params.token;
+    console.log('token de ruta', token);
+    res.render('recovery', { title: 'Restablecer contraseña', token });
+  });
+  
+
+  router.get('/recoveryPass', (req, res) => {
+    res.render('recoveryPass', { title: 'Password recovery' });
+  });
+
 router.get('/chat', (req, res) => {
     res.render('chat', { title: 'Grooming Chat' });
 });

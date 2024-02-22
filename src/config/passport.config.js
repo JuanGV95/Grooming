@@ -3,7 +3,7 @@ import { Strategy as LocalStrategy } from 'passport-local';
 import { Strategy as GithubStrategy } from 'passport-github2';
 import { Strategy as JwtStrategy, ExtractJwt } from 'passport-jwt';
 import UserModel from '../dao/models/user.model.js';
-import { createHash, isValidPassword, JWT_SECRET } from '../utils/utils.js';
+import { createHash, isValidPassword, JWT_SECRET, JWT_RECOVERY } from '../utils/utils.js';
 
 //JwtStrategy con cookies
 function cookieExtractor(req){
@@ -24,14 +24,30 @@ export const init = () => {
     secretOrKey: JWT_SECRET,
     jwtFromRequest: ExtractJwt.fromExtractors([cookieExtractor]) 
   }
-  passport.use('jwt',new JwtStrategy(opts, (payload, done)=>{
+  passport.use('jwt-auth', new JwtStrategy({ ...opts, secretOrKey: JWT_SECRET }, (payload, done) => {
+    if (payload.type !== 'auth') {
+      return done(null, false, { message: 'Token inválido para autenticación' });
+    }
     const user = payload;
-  if (user) {
-    return done(null, user);
-  } else {
-    return done(null, false, { message: 'Usuario no encontrado' });
-  }
+    if (user) {
+      return done(null, user);
+    } else {
+      return done(null, false, { message: 'Usuario no encontrado' });
+    }
   }));
+
+  passport.use('jwt-reset-password', new JwtStrategy({ ...opts, secretOrKey: JWT_RECOVERY }, (payload, done) => {
+    if (payload.type !== 'reset_password') {
+      return done(null, false, { message: 'Token inválido para restablecer contraseña' });
+    }
+    const user = payload;
+    if (user) {
+      return done(null, user);
+    } else {
+      return done(null, false, { message: 'Usuario no encontrado' });
+    }
+  }));
+
 
 
   const gitghubOpts = {

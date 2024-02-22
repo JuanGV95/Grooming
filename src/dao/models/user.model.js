@@ -10,7 +10,7 @@ const userSchema = new Schema({
   provider: { type: String, default: "No provider" },
   role: {
     type: String,
-    enum: ['user', 'admin'],
+    enum: ['user', 'premium', 'admin'],
     default: 'user',
   },
   age: { type: Number },

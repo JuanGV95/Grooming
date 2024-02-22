@@ -50,7 +50,10 @@ async (req, res) => {
     }
 });
 
-router.delete('/carts/:cid', async (req, res) => {
+router.delete('/carts/:cid',
+passport.authenticate('jwt', {session: false}),
+authMiddleware(['admin']),
+async (req, res) => {
     const { cid } = req.params;
     try {
         const result = await CartManager.deleteProductsInCart(cid);

@@ -3,6 +3,7 @@ export default {
     port: process.env.PORT || 8080,
     mongodbUri: process.env.MONGODB_URI,
     jwt: process.env.JWT_SECRET,
+    jwtRecovery: process.env.JWT_RECOVERY,
     cookie: process.env.COOKIE_SECRET,
     persistence: process.env.PERSISTENCE || 'memory', 
     mail: {

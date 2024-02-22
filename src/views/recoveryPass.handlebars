@@ -1,0 +1,14 @@
+<article>
+  <form action="/api/auth/recoveryPass" method="post">
+    <header>
+      <h1>Solicitar correo de recuperacion</h1>
+    </header>
+    <input type="email" name="email" placeholder="Correo" required>
+    <footer>
+      <input type="submit" value="Solicitar">
+    </footer>
+    <a href="/login">Quiero iniciar sesión</a>
+  </form>
+</article>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="/js/fetchRecoveryToken.js"></script>

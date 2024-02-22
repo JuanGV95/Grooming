@@ -17,7 +17,9 @@ export const isValidPassword = (password, user) => bcrypt.compareSync(password, 
 
 export const JWT_SECRET = config.jwt;
 
-export const createToken = (user) => {
+export const JWT_RECOVERY = config.jwtRecovery;
+
+export const createToken = (user, type = 'auth') => {
   const {
     _id,
     first_name,
@@ -41,20 +43,50 @@ export const createToken = (user) => {
     cart,
     role,
     age,
+    type: type
   };
-return jwt.sign(payload, JWT_SECRET, {expiresIn: '30m'})
+return jwt.sign(payload, type === 'auth' ? JWT_SECRET : JWT_RECOVERY, {expiresIn: '60m'})
 }
 
-export const verifyToken = (token)=>{
-   return new Promise((resolve, reject)=>{
-      jwt.verify(token, JWT_SECRET, (error, payload)=>{
-         if(error){
-          return reject(error);
-         }
-         resolve(payload)
-      });
-   });
-}
+export const verifyToken = (token) => {
+  return new Promise((resolve, reject) => {
+     jwt.verify(token, JWT_SECRET, (error, payload) => {
+        if (error) {
+           if (error.name === 'TokenExpiredError') {
+              reject({ message: 'El token ha expirado. Por favor, inicia sesión nuevamente.' });
+           } else if (error.name === 'JsonWebTokenError' || error.name === 'SyntaxError') {
+              reject({ message: 'El token es inválido o está mal formado. Por favor, verifica tu sesión.' });
+           } else {
+              reject({ message: 'Ocurrió un error al verificar el token. Por favor, intenta nuevamente.' });
+           }
+        } else {
+           resolve(payload);
+        }
+     });
+  });
+};
+
+export const verifyRecoveryToken = (token) => {
+  return new Promise((resolve, reject) => {
+     jwt.verify(token, JWT_RECOVERY, (error, payload) => {
+        if (error) {
+           // Verificar si el error es causado por expiración del token
+           if (error.name === 'TokenExpiredError') {
+              return reject({ message: 'El token de recuperación ha expirado. Por favor, solicita un nuevo enlace.' });
+           }
+           // Verificar si el error es causado por un token inválido o mal formado
+           if (error.name === 'JsonWebTokenError' || error.name === 'SyntaxError') {
+              return reject({ message: 'El token de recuperación es inválido o está mal formado. Por favor, solicita un nuevo enlace.' });
+           }
+           // Si no se reconoce el tipo de error, devolver un mensaje de error genérico
+           return reject({ message: 'Ocurrió un error al verificar el token de recuperación. Por favor, intenta nuevamente.' });
+        }
+        // Si el token se verifica correctamente con JWT_RECOVERY, resolver con el payload
+        resolve(payload);
+     });
+  });
+};
+
 
 export const authMiddleware = roles => (req, res, next) => { 
   const { user } = req;
