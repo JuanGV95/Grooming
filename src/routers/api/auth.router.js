@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import UserModel from '../../dao/models/user.model.js';
 import passport from 'passport';
-import { createHash, isValidPassword, createToken, authMiddleware, verifyRecoveryToken  } from '../../utils/utils.js';
+import { createHash, isValidPassword, createToken, authMiddleware, verifyRecoveryToken } from '../../utils/utils.js';
 import UserDto from '../../dto/user.dto.js';
 import { CustomError } from '../../utils/customError.js';
 import { generatorUserError } from '../../utils/causeMessageError.js';
@@ -85,72 +85,69 @@ router.post('/auth/login',
 
   });
 
-router.post('/auth/recoveryPass', async (req, res) => {
-  const { email } = req.body;
-
-  if (!email) {
-    return res.status(400).json({ message: 'Correo electrónico requerido para la recuperación de contraseña' });
-  }
-
-  const user = await UserModel.findOne({ email });
-  if (!user) {
-    // Si el usuario no existe, devolver un error
-    return res.status(404).json({ message: 'Usuario no encontrado' });
-  }
-
-  const token = jwt.sign({ userId: user._id }, config.jwtRecovery, { expiresIn: '1h' });
-
-  const resetPasswordLink = `http://localhost:8080/recovery/${token}`;
-
-  const emailContent = `<p>Haz clic en el siguiente enlace para restablecer tu contraseña:</p>
-                         <a href="${resetPasswordLink}">Restablecer contraseña</a>`;
-  try {
-    await EmailService.getInstance().sendEmail(email, 'Recuperación de contraseña', emailContent);
-    res.redirect('/login');
-  } catch (error) {
-    console.error('Error al enviar el correo electrónico de recuperación de contraseña:', error);
-    res.status(500).json({ message: 'Error al enviar el correo electrónico de recuperación de contraseña' });
-  }
-});
-
-router.put('/auth/recovery', async (req, res) => {
-  const { password } = req.body;
-  const token = req.params.token; // Obtener el token de la ruta
-
-  console.log({password, token}); // Para verificar que se esté pasando correctamente
-
-  try {
-    if (!password) {
-      return res.status(400).json({ message: 'El campo de contraseña es requerido' });
+  router.post('/auth/recoveryPass', async (req, res) => {
+    const { email } = req.body;
+  
+    if (!email) {
+      return res.status(400).json({ message: 'Correo electrónico requerido para la recuperación de contraseña' });
     }
-
-    // Verificar el token de recuperación
-    const payload = await verifyRecoveryToken(token);
-    console.log(payload); // Para verificar el contenido del tokenr
-    if (!payload.userId) {
-      return res.status(400).json({ message: 'Token de recuperación inválido' });
-    }
-
-    const user = await UserModel.findById(payload.userId);
+  
+    const user = await UserModel.findOne({ email });
     if (!user) {
       return res.status(404).json({ message: 'Usuario no encontrado' });
     }
-
-    const isSamePassword = isValidPassword(password, user);
-    if (isSamePassword) {
-      return res.status(400).json({ message: 'La contraseña no puede ser igual a la anterior' });
+  
+    const token = jwt.sign({ userId: user._id }, config.jwtRecovery, { expiresIn: '1h' });
+   
+    const resetPasswordLink = `http://localhost:8080/recovery/${token}`; // Corrige el formato de la URL
+    
+    const emailContent = `<p>Haz clic en el siguiente enlace para restablecer tu contraseña:</p>
+                           <a href="${resetPasswordLink}">Restablecer contraseña</a>`;
+    try {
+      await EmailService.getInstance().sendEmail(email, 'Recuperación de contraseña', emailContent);
+      res.status(200).json({ message: 'Correo electrónico de recuperación enviado correctamente' });
+    } catch (error) {
+      console.error('Error al enviar el correo electrónico de recuperación de contraseña:', error);
+      res.status(500).json({ message: 'Error al enviar el correo electrónico de recuperación de contraseña' });
     }
+  });
 
+  router.put('/auth/recovery/:token', async (req, res) => {
+    const { password } = req.body; 
+    const { token } = req.params;  
+  
+    try {
+      if (!password) {
+        return res.status(400).json({ message: 'El campo de contraseña es requerido' });
+      }
+  
+      // Verificar el token de recuperación
+      const payload = await verifyRecoveryToken(token);
+      console.log('payload',payload); 
+      if (!payload.userId) {
+        return res.status(400).json({ message: 'Token de recuperación inválido' });
+      }
+      const user = await UserModel.findById(payload.userId);
+      if (!user) {
+        return res.status(404).json({ message: 'Usuario no encontrado' });
+      }
+  
+      const isSamePassword = isValidPassword(password, user);
+      if (isSamePassword) {
+        return res.status(400).json({ message: 'La contraseña no puede ser igual a la anterior' });
+      }
+  
+      user.password = createHash(password);
+      await user.save();
+  
+      res.status(200).json({ message: 'Contraseña actualizada exitosamente' });
+    } catch (error) {
+      console.error('Error al actualizar la contraseña:', error);
+      res.status(500).json({ message: 'Error al actualizar la contraseña' });
+    }
+  });
+  
 
-    user.password = createHash(password);
-    await user.save();
-
-    res.status(200).json({ message: 'Contraseña actualizada exitosamente' });
-  } catch (error) {
-    console.error('Error al actualizar la contraseña:', error);
-    res.status(500).json({ message: 'Error al actualizar la contraseña' });
-  }
-});
 
 
 router.get('/auth/logout', (req, res) => {

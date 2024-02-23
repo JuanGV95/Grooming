@@ -9,33 +9,32 @@ router.get('/', (req, res) => {
 })
 
 router.get('/profile', (req, res) => {
-    if (!req.session.user) {
-      return res.redirect('/login');
-    }
-    res.render('profile', { title: 'Hello People 🖐️', user: req.session.user });
-  });
-  
-  router.get('/login', (req, res) => {
-    res.render('login', { title: 'Inicio de sesion 🔐' });
-  });
-  
-  router.get('/register', (req, res) => {
-    res.render('register', { title: 'Registro' });
-  });
+  if (!req.session.user) {
+    return res.redirect('/login');
+  }
+  res.render('profile', { title: 'Hello People 🖐️', user: req.session.user });
+});
 
-  router.get('/recovery/:token', (req, res) => {
-    const token = req.params.token;
-    console.log('token de ruta', token);
-    res.render('recovery', { title: 'Restablecer contraseña', token });
-  });
-  
+router.get('/login', (req, res) => {
+  res.render('login', { title: 'Inicio de sesion 🔐' });
+});
 
-  router.get('/recoveryPass', (req, res) => {
-    res.render('recoveryPass', { title: 'Password recovery' });
-  });
+router.get('/register', (req, res) => {
+  res.render('register', { title: 'Registro' });
+});
+
+router.get(`/recovery/:token`, (req, res) => {
+  const token = req.params.token; // Obtener el token de la ruta
+  res.render('recovery', { title: 'Restablecer contraseña', token });
+});
+
+
+router.get('/recoveryPass', (req, res) => {
+  res.render('recoveryPass', { title: 'Password recovery' });
+});
 
 router.get('/chat', (req, res) => {
-    res.render('chat', { title: 'Grooming Chat' });
+  res.render('chat', { title: 'Grooming Chat' });
 });
 
 router.get('/mail', async (req, res) => {
@@ -59,7 +58,7 @@ router.get('/mockingproducts', (req, res) => {
   res.status(200).json(products);
 });
 
-router.get('/loggerTest', (req, res) =>{
+router.get('/loggerTest', (req, res) => {
   req.logger.debug('Hola desde el request index home 😁 (debug)');
   req.logger.info('Hola desde el request index home 😁 (info)');
   req.logger.warning('Hola desde el request index home 😁 (warn)');
