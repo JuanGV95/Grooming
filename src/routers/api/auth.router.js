@@ -18,6 +18,7 @@ router.post('/auth/register', async (req, res) => {
       last_name,
       email,
       password,
+      role,
       age,
     },
   } = req;
@@ -51,6 +52,7 @@ router.post('/auth/register', async (req, res) => {
     last_name,
     email,
     password: createHash(password),
+    role,
     age,
   })
   res.redirect('/login');

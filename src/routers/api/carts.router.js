@@ -2,6 +2,7 @@ import { Router } from 'express';
 const router = Router();
 import passport from 'passport';
 import CartManager from '../../dao/carts.manager.js';
+import ProductManager from '../../dao/products.manager.js';
 import { authMiddleware } from '../../utils/utils.js';
 
 
@@ -93,18 +94,31 @@ router.put('/carts/:cid/products/:pid', async (req, res) => {
 });
 
 router.post('/carts/:cid/products/:pid',
-passport.authenticate('jwt', {session: false}),
-authMiddleware(['user']), async (req, res) => {
-    const { params } = req;
-    const { cid, pid } = params;
-    
-    try {
-        const newProductInCart = await CartManager.addProductInCart(cid, pid);
-        res.status(201).json(newProductInCart);
-    } catch (error) {
-        res.status(400).json({ error: error.message });
-    }
-});
+    passport.authenticate('jwt-auth', { session: false }),
+    authMiddleware(['user', 'premium']), async (req, res) => {
+        const { params, user } = req;
+        const { cid, pid } = params;
+
+        try {
+            // Verificar si el usuario es premium
+            if (user.role === 'premium') {
+                // Obtener el producto por su ID
+                const product = await ProductManager.getById(pid);
+                if (product && product.owner === user.email) {
+                    // El usuario premium no puede agregar su propio producto al carrito
+                    return res.status(403).json({ message: 'No puedes agregar tu propio producto al carrito' });
+                }
+            }
+
+            // Si no es premium o el producto no le pertenece, agregar el producto al carrito
+            const newProductInCart = await CartManager.addProductInCart(cid, pid);
+            res.status(201).json(newProductInCart);
+        } catch (error) {
+            res.status(400).json({ error: error.message });
+        }
+    });
+
+
 
 router.post('/carts/:cid/purchase',
     passport.authenticate('jwt', {session: false}),

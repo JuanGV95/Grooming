@@ -22,26 +22,32 @@ export default class CartManager {
         }
     }
 
-    static async addProductInCart(cid, pid, quantity) {
+    static async addProductInCart(cid, pid, quantity, userRole, userEmail) {
         try {
             const cart = await CartModel.findById(cid);
             console.log('Cart:', cart);
             const product = await ProductManager.getById(pid);
+            
             console.log('Product:', product);
             if (!product) {
                 throw new Error(`El producto con el id ${pid} no se encuentra.`);
             }
-
+    
+            // Verificar si el usuario es premium y si el producto le pertenece
+            if (userRole === 'premium' && (product.owner === userEmail || product.owner === userRole)) {
+                throw new Error('No puedes agregar a tu carrito un producto que te pertenece');
+            }
+    
             if (cart) {
                 console.log('cart.products antes de la búsqueda:', cart.products);
                 console.log('pid-extraido', pid);
                 console.log('product_id-extraido', product._id.toString());
                 try {
                     const existingProduct = cart.products.find((p) => p.product.toString() === product._id.toString());
-
+    
                     console.log('existingProduct', existingProduct);
                     console.log('productodebajodelindex', product._id);
-
+    
                     if (existingProduct) {
                         existingProduct.quantity++;
                     } else {
@@ -52,7 +58,7 @@ export default class CartManager {
                         console.log('newProductprobado', newProduct);
                         cart.products.push(newProduct);
                     }
-
+    
                     console.log('Longitud de cart.products:', cart.products.length);
                     await CartModel.updateOne({ _id: cart._id }, { products: cart.products });
                     console.log('Cart después de la operación:', cart);
@@ -69,8 +75,8 @@ export default class CartManager {
             throw new Error(`Error al agregar el producto al carrito: ${error.message}`);
         }
     }
-
-
+    
+    
 
     static async updateProductInCart(cid, pid, quantity) {
         try {

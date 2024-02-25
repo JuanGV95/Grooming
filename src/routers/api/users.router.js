@@ -54,7 +54,7 @@ router.post('/users/', async (req, res, next) => {
       password: createHash(password),
       providerId: "",
       provider: "No provider",
-      role: 'user',
+      role,
       age
     });
 
@@ -73,6 +73,39 @@ router.put('/users/:uid', async (req, res, next) => {
     next(error);
   }
 });
+
+router.put('/users/premium/:uid', async (req, res, next)=>{
+  try {
+      const { uid } = req.params;
+      const { role } = req.body;
+
+      // Verificar si el rol enviado es válido
+      if (role !== 'user' && role !== 'premium') {
+          return res.status(400).json({ message: 'Rol inválido. El rol debe ser "user" o "premium".' });
+      }
+
+      // Buscar el usuario por su ID
+      const user = await UserModel.findById(uid);
+      if (!user) {
+          return res.status(404).json({ message: 'Usuario no encontrado.' });
+      }
+
+      // Verificar si el usuario ya tiene el rol solicitado
+      if (user.role === role) {
+          return res.status(400).json({ message: `El usuario ya tiene el rol "${role}".` });
+      }
+
+      // Actualizar el rol del usuario
+      user.role = role;
+      await user.save();
+
+      res.status(200).json({ message: `El rol del usuario con ID ${uid} ha sido cambiado a "${role}".` });
+  } catch (error) {
+      console.error('Error al cambiar el rol del usuario:', error);
+      res.status(500).json({ message: 'Error al cambiar el rol del usuario.' });
+  }
+});
+
 
 router.delete('/users/:uid', async (req, res, next) => {
   try {
