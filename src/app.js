@@ -7,6 +7,8 @@ import MongoStore from 'connect-mongo'; //solo para sessions
 import config from './config/config.js';
 import cookieParser from 'cookie-parser';
 import { addLogger } from './config/logger.js';
+import swaggerJSDoc from 'swagger-jsdoc';
+import swaggerUi  from 'swagger-ui-express';
 
 //import configs
 import { __dirname } from './utils/utils.js';
@@ -21,19 +23,20 @@ import userRouter from './routers/api/users.router.js';
 import authRouter from './routers/api/auth.router.js';
 const app = express();
 
-// const SESSION_SECRET = '|7@3BBY5jH:@zFQIg_v47HkKP5S#p&Uc'; solo para session
-
-//solo para sessions
-/* app.use(sessions({
-     store: MongoStore.create({
-       mongoUrl: URI,
-       mongoOptions: {},
-       ttl: 60*30,
-     }), 
-     secret: SESSION_SECRET,
-     resave: true,
-     saveUninitialized: true,
-   })); */
+if (process.env.NODE_ENV == 'production') {
+  const swaggerOpts = {
+    definition: {
+      openapi: '3.0.0',
+      info: {
+        title: 'Grooming Api',
+        description: 'Esta es la documentacion de Grooming.',
+      },
+    },
+    apis: [path.join(__dirname, '.', 'docs', '**', '*.yaml')],
+  };
+  const specs = swaggerJSDoc(swaggerOpts);
+  app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));
+}
 
 //config 🍪🍪
 const COOKIE_SECRET = config.cookie;
