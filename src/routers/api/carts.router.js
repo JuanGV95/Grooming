@@ -20,14 +20,6 @@ async (req, res)=>{
     }
 })
 
-router.post('/carts', 
-passport.authenticate('jwt', {session: false}),
-authMiddleware(['admin', 'user']),
-async (req, res)=>{
-   const carts = await CartManager.getById({});
-   res.status(200).json(carts);
-})
-
 router.get('/carts/:cid', 
 passport.authenticate('jwt', {session: false}),
 authMiddleware(['user', 'admin']),

@@ -1,0 +1,230 @@
+paths:
+  /api/carts:
+    post:
+      summary: Crear un nuevo carrito
+      tags:
+        - Carts
+      security:
+        - jwt: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Cart'
+      responses:
+        201:
+          description: Carrito creado exitosamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cart'
+        400:
+          description: Error al crear el carrito
+
+  /api/carts/{cid}:
+    get:
+      summary: Obtener un carrito por ID
+      tags:
+        - Carts
+      security:
+        - jwt: []
+      parameters:
+        - in: path
+          name: cid
+          required: true
+          description: ID del carrito a obtener
+          schema:
+            type: string
+      responses:
+        200:
+          description: Carrito obtenido exitosamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cart'
+        404:
+          description: Carrito no encontrado
+        500:
+          description: Error interno del servidor
+
+    delete:
+      summary: Eliminar un carrito por ID
+      tags:
+        - Carts
+      security:
+        - jwt: []
+      parameters:
+        - in: path
+          name: cid
+          required: true
+          description: ID del carrito a eliminar
+          schema:
+            type: string
+      responses:
+        200:
+          description: Carrito eliminado exitosamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        500:
+          description: Error interno del servidor
+
+  /api/carts/{cid}/products/{pid}:
+    put:
+      summary: Actualizar un producto en el carrito
+      tags:
+        - Carts
+      security:
+        - jwt: []
+      parameters:
+        - in: path
+          name: cid
+          required: true
+          description: ID del carrito
+          schema:
+            type: string
+        - in: path
+          name: pid
+          required: true
+          description: ID del producto a actualizar
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                quantity:
+                  type: integer
+                  description: Nueva cantidad del producto en el carrito
+              required:
+                - quantity
+      responses:
+        200:
+          description: Producto en el carrito actualizado exitosamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cart'
+        400:
+          description: Error al actualizar el producto en el carrito
+
+    post:
+      summary: Agregar un producto al carrito
+      tags:
+        - Carts
+      security:
+        - jwt: []
+      parameters:
+        - in: path
+          name: cid
+          required: true
+          description: ID del carrito
+          schema:
+            type: string
+        - in: path
+          name: pid
+          required: true
+          description: ID del producto a agregar
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                quantity:
+                  type: integer
+                  description: Cantidad del producto a agregar
+              required:
+                - quantity
+      responses:
+        201:
+          description: Producto agregado al carrito exitosamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cart'
+        400:
+          description: Error al agregar el producto al carrito
+
+  /api/carts/{cid}/purchase:
+    post:
+      summary: Realizar la compra del carrito
+      tags:
+        - Carts
+      security:
+        - jwt: []
+      parameters:
+        - in: path
+          name: cid
+          required: true
+          description: ID del carrito a comprar
+          schema:
+            type: string
+      responses:
+        200:
+          description: Compra realizada exitosamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  ticket:
+                    $ref: '#/components/schemas/Ticket'
+        500:
+          description: Error al realizar la compra
+
+    delete:
+      summary: Eliminar un producto del carrito
+      tags:
+        - Carts
+      security:
+        - jwt: []
+      parameters:
+        - in: path
+          name: cid
+          required: true
+          description: ID del carrito
+          schema:
+            type: string
+        - in: path
+          name: pid
+          required: true
+          description: ID del producto a eliminar
+          schema:
+            type: string
+      responses:
+        200:
+          description: Producto eliminado del carrito exitosamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        500:
+          description: Error al eliminar el producto del carrito
+
+components:
+  schemas:
+    Cart:
+      type: object
+      properties:
+        // Define las propiedades de un carrito aquí
+    Ticket:
+      type: object
+      properties:
+        // Define las propiedades de un ticket aquí
