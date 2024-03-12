@@ -7,7 +7,9 @@
   "scripts": {
     "start": "node .",
     "dev": "nodemon --exec \"node -r dotenv/config .\"",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha -r dotenv/config --timeout 10000 --exit ./tests/**/*.test.js",
+    "test:functionals": "mocha -r dotenv/config --timeout 10000 --exit ./tests/functionals/*.test.js",
+    "test:units": "mocha -r dotenv/config --timeout 10000 --exit ./tests/units/*.test.js"
   },
   "keywords": [
     "Backend",
@@ -43,6 +45,9 @@
     "winston": "^3.11.0"
   },
   "devDependencies": {
-    "@faker-js/faker": "^8.4.0"
+    "@faker-js/faker": "^8.4.0",
+    "chai": "^5.1.0",
+    "mocha": "^10.3.0",
+    "supertest": "^6.3.4"
   }
 }

@@ -1,14 +1,10 @@
 import { respuestaPaginada } from '../utils/utils.js';
 import ProductManager from '../dao/products.dao.js';
 import ProductService from '../services/products.service.js';
-import { CustomError } from '../utils/customError.js';
-import { generatorProductError } from '../utils/causeMessageError.js';
-import EnumsError from '../utils/enumsError.js';
 export default class ProductController {
     static async getProducts(req, res) {
         try {
             const user = req.user;
-            console.log('user', user);
 
             const { limit = 10, page = 1, sort, search } = req.query;
             const criteria = {};
@@ -63,8 +59,7 @@ export default class ProductController {
             return;
         }
 
-        // Agregar el owner al cuerpo del producto antes de crearlo
-        body.owner = user.email; // Asignar el correo electrónico del usuario como owner
+        body.owner = user.email; 
 
         try {
             const newProduct = await ProductManager.create(body);

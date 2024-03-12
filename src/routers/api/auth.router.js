@@ -66,7 +66,6 @@ router.post('/auth/login',
       return res.status(401).json({ message: 'Correo o contraseña son invalidos' });
     }
     const user = await UserModel.findOne({ email });
-    console.log('user', user);
     if (!user) {
       return res.status(401).json({ message: 'Correo o contraseña son invalidos' });
     }
@@ -76,7 +75,6 @@ router.post('/auth/login',
       return res.status(401).json({ message: 'Correo o contraseña son invalidos' });
     }
     const token = createToken(user);
-    console.log('token', token);
     res
       .cookie('access_token', token, { maxAge: 1000 * 60 * 30, httpOnly: true, signed: true })
       .status(200)
