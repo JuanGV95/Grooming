@@ -14,7 +14,12 @@ const userSchema = new Schema({
     default: 'user',
   },
   age: { type: Number },
-  cart: { type: mongoose.Schema.Types.ObjectId, ref: 'Cart' }
+  cart: { type: mongoose.Schema.Types.ObjectId, ref: 'Cart' },
+  documents: [{
+    name: String,
+    reference: String
+  }],
+  last_connection: { type: Date }
 }, { timestamps: true });
 
 userSchema.post('save', async function (user, next) {
