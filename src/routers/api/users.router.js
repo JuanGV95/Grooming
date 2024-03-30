@@ -1,9 +1,25 @@
 import { Router } from 'express';
 import UserModel from '../../dao/models/user.model.js';
-import {createHash} from '../../utils/utils.js';
+import {authMiddleware, createHash} from '../../utils/utils.js';
 import passport from 'passport';
+import EmailService from '../../services/email.service.js';
 import upload from '../../utils/uploader.js';
 const router = Router();
+
+
+router.get('/users', passport.authenticate('jwt-auth', { session: false }), authMiddleware(['admin']), async (req, res) => {
+  try {
+    // Obtener todos los usuarios con los datos principales
+    const users = await UserModel.find({}, { first_name: 1, last_name: 1, email: 1, role: 1 });
+
+    // Devolver la lista de usuarios
+    res.status(200).json(users);
+  } catch (error) {
+    // Manejo de errores
+    console.error('Error al obtener usuarios:', error);
+    res.status(500).json({ message: 'Error al obtener usuarios.' });
+  }
+});
 
 
 router.post('/user/:uid/documents', upload.array('documents'), async (req, res) => {
@@ -41,14 +57,6 @@ router.get('/users/me', passport.authenticate('jwt', {session: false}), async (r
   res.status(200).json(user);
 })
 
-router.get('/users', async (req, res, next) => {
-  try {
-    const users = await UserModel.find({});
-    res.status(200).json(users);
-  } catch (error) {
-    next(error);
-  }
-});
 
 router.get('/users/:uid', async (req, res, next) => {
   try {
@@ -153,12 +161,7 @@ router.put('/users/premium/:uid', async (req, res, next) => {
   }
 });
 
-
-
-
-
-
-router.delete('/users/:uid', async (req, res, next) => {
+router.delete('/users/:uid',passport.authenticate('jwt-auth', { session: false }), authMiddleware(['admin']), async (req, res, next) => {
   try {
     const { params: { uid } } = req;
     await UserModel.deleteOne({ _id: uid });
@@ -167,5 +170,43 @@ router.delete('/users/:uid', async (req, res, next) => {
     next(error);
   }
 });
+
+router.delete('/users', passport.authenticate('jwt-auth', { session: false }), authMiddleware(['admin']), async (req, res, next) => {
+  try {
+    // Calcular la fecha límite para la inactividad (por ejemplo, hace 30 minutos)
+    const inactiveThreshold = new Date();
+    inactiveThreshold.setMinutes(inactiveThreshold.getMinutes() - 30);
+
+    // Encontrar usuarios inactivos que sean de tipo 'user' y no sean administradores
+    const inactiveUsers = await UserModel.find({
+      last_connection: { $lt: inactiveThreshold },
+      role: 'user'
+    });
+
+    // Eliminar usuarios inactivos
+    const deletedUsers = await UserModel.deleteMany({
+      last_connection: { $lt: inactiveThreshold },
+      role: 'user'
+    });
+
+    // Enviar correos electrónicos de notificación a los usuarios eliminados
+    const emailPromises = inactiveUsers.map(async user => {
+      try {
+        const emailContent = `<p>Su cuenta ha sido eliminada debido a inactividad.</p>`;
+        await EmailService.getInstance().sendEmail(user.email, 'Notificación de eliminación de cuenta', emailContent);
+      } catch (error) {
+        console.error(`Error al enviar correo electrónico de notificación a ${user.email}:`, error);
+      }
+    });
+    await Promise.all(emailPromises);
+
+    // Devolver una respuesta con la cantidad de usuarios eliminados
+    res.status(200).json({ message: `Se eliminaron ${deletedUsers.deletedCount} usuarios inactivos.` });
+  } catch (error) {
+    console.error('Error al eliminar usuarios inactivos:', error);
+    res.status(500).json({ message: 'Error al eliminar usuarios inactivos.' });
+  }
+});
+
 
 export default router;
