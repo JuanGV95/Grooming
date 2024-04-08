@@ -1,10 +1,8 @@
-
 import ProductDao from "../dao/products.dao.js";
 export default class ProductsService {
   static async getAll(queryCriteria, options) {
     console.log('queryCriteria:', queryCriteria);
     console.log('Options:', options);
-    //return ProductDao.getAll(queryCriteria, options);
     const result = await ProductDao.getAll(queryCriteria, options);
     return result;
   }

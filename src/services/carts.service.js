@@ -1,31 +1,49 @@
-import CartDao from "../dao/cart.dao.js";
+import ProductManager from '../dao/products.dao.js';
 
-export default class CartsService {
-  static create() {
-    return CartDao.create();
-  }
+export default class CartService {
+    static async validateProductForCart(pid, userRole, userEmail) {
+        const product = await ProductManager.getById(pid);
+        if (!product) {
+            throw new Error(`El producto con el id ${pid} no se encuentra.`);
+        }
 
-  static getCartById(id) {
-    return CartDao.getCartById(id);
-  }
+        // Verificar si el usuario es premium y si el producto le pertenece
+        if (userRole === 'premium' && (product.owner === userEmail || product.owner === userRole)) {
+            throw new Error('No puedes agregar a tu carrito un producto que te pertenece');
+        }
 
-  static populateCart(id) {
-    return CartDao.populateCart(id);
-  }
+        return product;
+    }
 
-  static async addProduct(cid, pid, quantity) {
-    return CartDao.addProduct(cid, pid, quantity);
-  }
+    static async calculateTotal(cartProducts) {
+        let totalAmount = 0;
+        for (const item of cartProducts) {
+            totalAmount += item.product.price * item.quantity;
+        }
+        return totalAmount.toFixed(2);
+    }
 
-  static delete(id) {
-    return CartDao.delete(id);
-  }
+    static async validatePurchase(cartProducts) {
+        let productosNoProcesados = [];
+        let totalAmount = 0;
+        // Verificar stock de cada producto en el carrito
+        for (const item of cartProducts) {
+            if (item.product.stock < item.quantity) {
+                productosNoProcesados.push(item);
+            } else {
+                totalAmount += item.product.price * item.quantity;
+            }
+        }
+        return { productosNoProcesados, totalAmount };
+    }
 
-  static deleteItemFromCart(cid, pid) {
-    return CartDao.deleteItemFromCart(cid, pid);
-  }
+    static async generateTicket(user, totalAmount) {
+        const ticketData = {
+            code: Math.floor(Math.random() * 1000000),
+            purchase_datetime: new Date().toISOString(),
+            amount: totalAmount,
+        };
 
-  static deleteItemsFromCart(cartId) {
-    return CartDao.deleteItemsFromCart(cartId);
-  }
+        return ticketData;
+    }
 }

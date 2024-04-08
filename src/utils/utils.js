@@ -101,6 +101,7 @@ export const authMiddleware = roles => (req, res, next) => {
 
 
 export const respuestaPaginada = (data, baseUrl = URL_BASE) => {
+  
   return {
     //status:success/error
     status: 'success',

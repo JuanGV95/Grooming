@@ -17,10 +17,15 @@ export default class ProductController {
             if (search) {
                 criteria.category = search;
             }
+            
+            // Obtener los datos paginados de ProductService
             const result = await ProductService.getAll(criteria, options);
-            res.status(200).render('products', { user, ...respuestaPaginada(result, sort, search) });
-
-
+            
+            // Formatear la respuesta paginada antes de enviarla al cliente
+            const formattedResponse = respuestaPaginada(result);
+            
+            // Enviar la respuesta al cliente
+            res.status(200).render('products', { user, ...formattedResponse });
         } catch (error) {
             console.error(error);
             res.status(500).json({ error: 'Error al obtener los productos.' });
@@ -149,8 +154,5 @@ export default class ProductController {
         await ProductManager.deleteById(product._id);
         res.status(200).json({ message: 'El producto fue eliminado' });
     }
-
-
-
 
 }

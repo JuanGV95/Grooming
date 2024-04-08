@@ -48,4 +48,43 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     });
+
+    function setupPaginationListeners() {
+        const prevLink = document.querySelector('.pagination a[href="{{prevLink}}"]');
+        const nextLink = document.querySelector('.pagination a[href="{{nextLink}}"]');
+        
+        if (prevLink && nextLink) {
+            prevLink.addEventListener('click', handlePaginationClick);
+            nextLink.addEventListener('click', handlePaginationClick);
+        } else {
+            console.error('No se encontraron los enlaces de paginación en el DOM.');
+        }
+    }
+
+    // Llama a la función para configurar los listeners después de renderizar los enlaces de paginación
+    setupPaginationListeners();
+
+    async function handlePaginationClick(event) {
+        try {
+            event.preventDefault();
+            const url = this.getAttribute('href');
+            
+            // Realizar una solicitud fetch para obtener los datos de la página de paginación
+            const response = await fetch(url);
+            if (!response.ok) {
+                throw new Error('Error al obtener los datos de la página de paginación');
+            }
+            
+            // Extraer los datos de la respuesta
+            const data = await response.json();
+            
+            // Actualizar la lista de productos en la página con los nuevos datos
+            updateProductList(data);
+        } catch (error) {
+            console.error('Error en la paginación:', error);
+            // Manejar el error, por ejemplo, mostrar un mensaje al usuario
+        }
+    }
+    
+    
 });

@@ -1,0 +1,40 @@
+<article>
+    <h1>Admin Panel</h1>
+
+    <!-- Sección para eliminar usuarios -->
+    <section id="deleteUserSection">
+        <h2>Eliminar Usuario</h2>
+        <form>
+            <label for="userId">ID del usuario a eliminar:</label>
+            <input type="text" id="userId" name="userId">
+            <button id="deleteUserButton" type="button">Eliminar Usuario</button>
+        </form>
+    </section>
+
+    <!-- Sección para eliminar usuarios inactivos -->
+    <section id="deleteInactiveUsersSection">
+        <h2>Eliminar Usuarios Inactivos</h2>
+        <button id="deleteInactiveUsersButton" type="button">Eliminar Usuarios Inactivos</button>
+    </section>
+
+    <!-- Sección para eliminar productos -->
+    <section id="deleteProductSection">
+        <h2>Eliminar Producto</h2>
+        <form>
+            <label for="productId">ID del producto a eliminar:</label>
+            <input type="text" id="productId" name="productId">
+            <button id="deleteProductButton" type="button">Eliminar Producto</button>
+        </form>
+    </section>
+
+    <!-- Sección para cambiar usuario a premium -->
+    <section id="changeToPremiumSection">
+        <h2>Cambiar Usuario a Premium</h2>
+        <form>
+            <label for="premiumUserId">ID del usuario a cambiar a premium:</label>
+            <input type="text" id="premiumUserId" name="premiumUserId">
+            <button id="changeToPremiumButton" type="button">Cambiar a Premium</button>
+        </form>
+    </section>
+</article>
+<script src="/js/fetchAdmin.js"></script>

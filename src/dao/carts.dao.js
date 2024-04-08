@@ -1,6 +1,7 @@
 import CartModel from './models/cart.model.js';
-import ProductManager from '../services/products.service.js';
-
+import TicketModel from './models/ticket.model.js';
+import ProductManager from './products.dao.js';
+import UserModel from './models/user.model.js';
 export default class CartManager {
     static get() {
         return CartModel.find();
@@ -21,14 +22,20 @@ export default class CartManager {
         }
     }
 
-    static async addProductInCart(cid, pid, quantity) {
+    static async addProductInCart(cid, pid, quantity, userRole, userEmail) {
         try {
             const cart = await CartModel.findById(cid);
             console.log('Cart:', cart);
             const product = await ProductManager.getById(pid);
+            
             console.log('Product:', product);
             if (!product) {
                 throw new Error(`El producto con el id ${pid} no se encuentra.`);
+            }
+    
+            // Verificar si el usuario es premium y si el producto le pertenece
+            if (userRole === 'premium' && (product.owner === userEmail || product.owner === userRole)) {
+                throw new Error('No puedes agregar a tu carrito un producto que te pertenece');
             }
     
             if (cart) {
@@ -72,57 +79,57 @@ export default class CartManager {
     
 
     static async updateProductInCart(cid, pid, quantity) {
-    try {
-        const cart = await CartModel.findById(cid);
+        try {
+            const cart = await CartModel.findById(cid);
 
-        if (!cart) {
-            throw new Error('El carrito no existe.');
+            if (!cart) {
+                throw new Error('El carrito no existe.');
+            }
+
+            const productIndex = cart.products.findIndex((p) => p.pid.toString() === pid);
+
+            if (productIndex !== -1) {
+                cart.products[productIndex].quantity = quantity;
+
+                await CartModel.updateOne({ _id: cart._id }, { products: cart.products });
+
+                console.log('Cart después de la operación:', cart);
+                return cart;
+            } else {
+                throw new Error('El producto no está en el carrito.');
+            }
+        } catch (error) {
+            console.error(`Error al actualizar el producto en el carrito: ${error.message}`);
+            throw error;
         }
+    }
 
-        const productIndex = cart.products.findIndex((p) => p.pid.toString() === pid);
+    static async updateCart(cid, pid) {
+        try {
+            const cart = await CartModel.findById(cid);
+            const product = await ProductManager.getById(pid);
 
-        if (productIndex !== -1) {
-          cart.products[productIndex].quantity = quantity;
-           
-             await CartModel.updateOne({ _id: cart._id }, { products: cart.products });
+            if (!cart) {
+                throw new Error('El carrito no existe');
+            }
+
+            cart.products = [];
+
+            const newProduct = {
+                product: product._id,
+                quantity: 1,
+            };
+            cart.products.push(newProduct);
+
+            await cart.save();
 
             console.log('Cart después de la operación:', cart);
             return cart;
-        } else {
-            throw new Error('El producto no está en el carrito.');
+        } catch (error) {
+            console.error('Error al actualizar el carrito:', error.message);
+            throw error;
         }
-    } catch (error) {
-        console.error(`Error al actualizar el producto en el carrito: ${error.message}`);
-        throw error;
     }
-}
-
-static async updateCart(cid, pid) {
-    try {
-        const cart = await CartModel.findById(cid);
-        const product = await ProductManager.getById(pid);
-
-        if (!cart) {
-            throw new Error('El carrito no existe');
-        }
-
-        cart.products = [];
-
-        const newProduct = {
-            product: product._id,
-            quantity: 1,
-        };
-        cart.products.push(newProduct);
-
-        await cart.save();
-
-        console.log('Cart después de la operación:', cart);
-        return cart;
-    } catch (error) {
-        console.error('Error al actualizar el carrito:', error.message);
-        throw error;
-    }
-}
 
 
 
@@ -165,55 +172,64 @@ static async updateCart(cid, pid) {
         }
     }
 
-    static async purchaseCart(cid) {
+    static async purchaseCart(cid, purchaserId) {
         try {
-            console.log(`Iniciando proceso de compra para el carrito: ${cid}`);
             const cart = await CartModel.findById(cid).populate('products.product');
             if (!cart) {
                 throw new Error('El carrito no existe.');
             }
+            const user = await UserModel.findById(purchaserId);
+            if (!user) {
+                throw new Error('Usuario no encontrado.');
+            }
     
             let productosNoProcesados = [];
             let productosProcesados = [];
-    
-            console.log(`Verificando stock de los productos en el carrito: ${cart._id}`);
+            let totalAmount = 0;
             // Verificar stock de cada producto en el carrito
             for (const item of cart.products) {
                 if (item.product.stock < item.quantity) {
-                    productosNoProcesados.push(item.product._id);
+                    productosNoProcesados.push(item);
                 } else {
                     productosProcesados.push(item);
+                    totalAmount += item.product.price * item.quantity;
                 }
             }
-    
-            console.log(`Productos procesados: ${productosProcesados.length}`);
-            console.log(`Productos no procesados: ${productosNoProcesados.length}`);
     
             // Actualizar stock de los productos procesados
             for (const item of productosProcesados) {
                 console.log(`Actualizando stock del producto: ${item.product._id}`);
                 await ProductManager.updateProductStock(item.product._id, item.product.stock - item.quantity);
-                // Aquí podrías añadir la lógica para generar el ticket de cada producto procesado
             }
     
-            // Si hay productos no procesados, actualizar el carrito
-            if (productosNoProcesados.length > 0) {
-                console.log(`Actualizando carrito para eliminar productos no procesados`);
-                cart.products = cart.products.filter(item => !productosNoProcesados.includes(item.product._id));
-                await cart.save();
+            // Actualizar carrito
+            cart.products = productosNoProcesados;
+            await cart.save();
     
+            // Generar ticket
+            let ticket;
+            if (productosProcesados.length > 0) {
+                const ticketData = {
+                    code: Math.floor(Math.random() * 1000000),
+                    purchase_datetime: new Date().toISOString(),
+                    amount: totalAmount.toFixed(2),
+                    purchaser: {
+                        firstName: user.first_name,
+                        lastName: user.last_name
+                    }
+                };
+                ticket = new TicketModel(ticketData);
+                await ticket.save();
+            }
+    
+            if (productosNoProcesados.length > 0) {
                 return {
                     message: 'Compra parcialmente exitosa. Algunos productos no tienen suficiente stock',
-                    ticket: cart, // Incluso con productos no procesados, devolver ticket de lo procesado
+                    ticket,
                     productosNoProcesados
                 };
             } else {
-                // Limpieza del carrito si todos los productos fueron procesados
-                console.log(`Limpieza del carrito después de procesar todos los productos`);
-                cart.products = [];
-                await cart.save();
-    
-                return { message: 'Compra finalizada con éxito', ticket: cart };
+                return { message: 'Compra finalizada con éxito', ticket };
             }
         } catch (error) {
             console.error('Error al realizar la compra:', error.message);
@@ -221,7 +237,4 @@ static async updateCart(cid, pid) {
         }
     }
     
-    
-
-
 }

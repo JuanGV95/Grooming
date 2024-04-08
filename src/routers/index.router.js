@@ -1,12 +1,16 @@
 import { Router } from 'express';
 import EmailService from '../services/email.service.js';
-import { generateProduct } from '../utils/utils.js'
-
+import {authMiddleware,generateProduct } from '../utils/utils.js'
+import passport from 'passport';
 const router = Router();
 
 router.get('/', (req, res) => {
   res.redirect('/login');
 })
+
+router.get('/admin',passport.authenticate('jwt-auth', { session: false }), authMiddleware(['admin']), (req, res) => {
+  res.render('admin', { title: 'Inicio de sesion 🔐' });
+});
 
 router.get('/profile', (req, res) => {
   if (!req.session.user) {
