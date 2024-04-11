@@ -1,6 +1,5 @@
 import { respuestaPaginada } from '../utils/utils.js';
 import ProductManager from '../dao/products.dao.js';
-import ProductService from '../services/products.service.js';
 export default class ProductController {
     static async getProducts(req, res) {
         try {
@@ -19,7 +18,7 @@ export default class ProductController {
             }
             
             // Obtener los datos paginados de ProductService
-            const result = await ProductService.getAll(criteria, options);
+            const result = await ProductManager.getAll(criteria, options);
             
             // Formatear la respuesta paginada antes de enviarla al cliente
             const formattedResponse = respuestaPaginada(result);

@@ -63,7 +63,7 @@ export default class CartController {
     static async addProductInCart(req, res) {
         const { cid, pid } = req.params;
         const { quantity } = req.body;
-        const user = req.user; // Assuming user information is available in the request
+        const user = req.user; 
         try {
             const newProductInCart = await CartManager.addProductInCart(cid, pid, quantity, user.role, user.email);
             res.status(201).json(newProductInCart);
@@ -75,7 +75,7 @@ export default class CartController {
     static async purchaseCart(req, res) {
         const { cid } = req.params;
         try {
-            const purchaserId = req.user.id; // Assuming user information is available in the request
+            const purchaserId = req.user.id; 
             const result = await CartManager.purchaseCart(cid, purchaserId);
             res.status(200).json({ message: result });
         } catch (error) {

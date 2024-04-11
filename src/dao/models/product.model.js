@@ -10,7 +10,7 @@ const ProductSchema = new mongoose.Schema({
     thumbnails: { type: Array, default: [] },
     code: { type: String, required: true },
     stock: { type: Number, required: true },
-    owner: { type: String, default: 'admin' } // Por defecto, el owner es 'admin'
+    owner: { type: String, default: 'admin' } 
 }, { timestamps: true });
 
 ProductSchema.plugin(mongoosePaginate);

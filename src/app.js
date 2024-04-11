@@ -1,9 +1,9 @@
 import express from 'express';
 import handlebars from 'express-handlebars';
-import sessions from 'express-session'; //solo para sessions
+
 import passport  from 'passport';
 import path from 'path';
-import MongoStore from 'connect-mongo'; //solo para sessions
+
 import config from './config/config.js';
 import cookieParser from 'cookie-parser';
 import { addLogger } from './config/logger.js';
@@ -12,7 +12,7 @@ import swaggerUi  from 'swagger-ui-express';
 
 //import configs
 import { __dirname } from './utils/utils.js';
-import { URI } from './db/mongodb.js'; //solo para sessions
+
 import {init as initPassport} from './config/passport.config.js';
 //import de ROUTERS
 import productsRouter from './routers/api/products.router.js';
@@ -55,7 +55,7 @@ app.set('view engine', 'handlebars');
 //Passport Config
 initPassport();
 app.use(passport.initialize());
-//app.use(passport.session()); //solo para sessions
+
 app.use('/', indexRouter, realtimeproducts);
 
 app.use('/api', productsRouter, cartsRouter, userRouter, authRouter);

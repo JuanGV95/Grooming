@@ -1,13 +1,12 @@
 // auth.controller.js
 
-import { registerUser, sendPasswordRecoveryEmail } from '../services/auth.service.js';
 import { isValidPassword, createToken, verifyRecoveryToken, createHash } from '../utils/utils.js';
 import UserModel from '../dao/models/user.model.js';
 import UserDto from '../dto/user.dto.js';
 import EmailService from '../services/email.service.js';
 import jwt from 'jsonwebtoken';
 import config from '../config/config.js';
-import passport from 'passport';
+
 
 const AuthController = {
   async register(req, res) {

@@ -1,5 +1,3 @@
-// auth.service.js
-
 import UserModel from '../dao/models/user.model.js';
 import { createHash } from '../utils/utils.js';
 import EmailService from '../services/email.service.js';

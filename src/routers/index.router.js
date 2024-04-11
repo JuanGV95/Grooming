@@ -28,7 +28,7 @@ router.get('/register', (req, res) => {
 });
 
 router.get(`/recovery/:token`, (req, res) => {
-  const token = req.params.token; // Obtener el token de la ruta
+  const token = req.params.token; 
   res.render('recovery', { title: 'Restablecer contraseña', token });
 });
 
@@ -40,6 +40,8 @@ router.get('/recoveryPass', (req, res) => {
 router.get('/chat', (req, res) => {
   res.render('chat', { title: 'Grooming Chat' });
 });
+
+
 
 router.get('/mail', async (req, res) => {
   const emailService = EmailService.getInstance();

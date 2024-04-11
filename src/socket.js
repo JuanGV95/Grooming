@@ -2,7 +2,7 @@
 import { Server } from 'socket.io'
 import pkg from 'jsonwebtoken';
 const {jwt} = pkg;
-import ProductManager from './dao/products.manager.js';
+import ProductManager from './dao/products.dao.js';
 import MessageModel from './dao/models/message.model.js';
 let io;
 
@@ -11,7 +11,7 @@ export const init = (httpServer) => {
   io = new Server(httpServer);
 
   io.use((socket, next) => {
-    const token = socket.handshake.auth.token; // Asegúrate de que el cliente envíe el token de esta manera
+    const token = socket.handshake.auth.token;
     if (!token) {
       return next(new Error('Authentication error - No token provided'));
     }
@@ -20,7 +20,7 @@ export const init = (httpServer) => {
       if (err) {
         return next(new Error('Authentication error'));
       }
-      socket.user = decoded; // Guarda la información del usuario en el socket
+      socket.user = decoded; 
       next();
     });
   });
@@ -61,7 +61,7 @@ export const init = (httpServer) => {
 
     socketClient.on('new-message', async (msg) => {
       if (socketClient.user.role !== 'user') {
-        return; // No permitir si no es un usuario normal
+        return; 
       }
       await MessageModel.create(msg);
       const messages = await MessageModel.find({});

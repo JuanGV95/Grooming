@@ -14,13 +14,15 @@ export default class CartManager {
 
     static async getById(cid) {
         try {
-            const cart = await CartModel.findById(cid);
+            const cart = await CartModel.findById(cid).populate('products.product');
             console.log('cart', cart);
             return cart;
         } catch (error) {
             console.error('Error al buscar el carrito por ID:', error.message);
+            throw error; 
         }
     }
+    
 
     static async addProductInCart(cid, pid, quantity, userRole, userEmail) {
         try {

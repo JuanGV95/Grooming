@@ -107,4 +107,14 @@ static async deleteById(pid) {
       }
   }
 
+  static async getAllByIds(productIds) {
+    try {
+        const products = await ProductModel.find({ _id: { $in: productIds } });
+        return products;
+    } catch (error) {
+        throw error;
+    }
+}
+
+
 }
