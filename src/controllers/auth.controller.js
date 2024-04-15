@@ -97,7 +97,7 @@ const AuthController = {
       const token = jwt.sign({ userId: user._id }, config.jwtRecovery, { expiresIn: '1h' });
 
       // Crear enlace para restablecer contraseña
-      const resetPasswordLink = `http://localhost:8080/recovery/${token}`;
+      const resetPasswordLink = `${config.recoveryLink}${token}`;
 
       // Enviar correo electrónico de recuperación
       const emailContent = `<p>Haz clic en el siguiente enlace para restablecer tu contraseña:</p>
