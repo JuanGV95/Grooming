@@ -79,36 +79,41 @@ const AuthController = {
   },
 
   async recoveryPassword(req, res) {
-    try {
-      const { email } = req.body;
+  try {
+    const { email } = req.body;
 
-      // Verificar si se proporciona un correo electrónico
-      if (!email) {
-        return res.status(400).json({ message: 'Correo electrónico requerido para la recuperación de contraseña' });
-      }
-
-      // Buscar al usuario por correo
-      const user = await UserModel.findOne({ email });
-      if (!user) {
-        return res.status(404).json({ message: 'Usuario no encontrado' });
-      }
-
-      // Generar token de recuperación
-      const token = jwt.sign({ userId: user._id }, config.jwtRecovery, { expiresIn: '1h' });
-
-      // Crear enlace para restablecer contraseña
-      const resetPasswordLink = `${config.recoveryLink}${token}`;
-
-      // Enviar correo electrónico de recuperación
-      const emailContent = `<p>Haz clic en el siguiente enlace para restablecer tu contraseña:</p>
-                           <a href="${resetPasswordLink}">Restablecer contraseña</a>`;
-      await EmailService.getInstance().sendEmail(email, 'Recuperación de contraseña', emailContent);
-
-      res.status(200).json({ message: 'Correo electrónico de recuperación enviado correctamente' });
-    } catch (error) {
-      res.status(404).json({ message: error.message });
+    // Verificar si se proporciona un correo electrónico
+    if (!email) {
+      return res.status(400).json({ message: 'Correo electrónico requerido para la recuperación de contraseña' });
     }
-  },
+
+    // Buscar al usuario por correo
+    const user = await UserModel.findOne({ email });
+    if (!user) {
+      return res.status(404).json({ message: 'Usuario no encontrado' });
+    }
+
+    // Generar token de recuperación
+    const token = jwt.sign({ userId: user._id }, config.jwtRecovery, { expiresIn: '1h' });
+
+    // Crear enlace para restablecer contraseña
+    let resetPasswordLink;
+    if (config.env === 'production') {
+      resetPasswordLink = `${config.recoveryLink}${token}`;
+    } else {
+      resetPasswordLink = `${config.BASE_URL}/recovery/${token}`; 
+    }
+
+    // Enviar correo electrónico de recuperación
+    const emailContent = `<p>Haz clic en el siguiente enlace para restablecer tu contraseña:</p>
+                         <a href="${resetPasswordLink}">Restablecer contraseña</a>`;
+    await EmailService.getInstance().sendEmail(email, 'Recuperación de contraseña', emailContent);
+
+    res.status(200).json({ message: 'Correo electrónico de recuperación enviado correctamente' });
+  } catch (error) {
+    res.status(404).json({ message: error.message });
+  }
+},
 
   async updatePasswordWithToken(req, res) {
     try {
