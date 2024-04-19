@@ -5,7 +5,7 @@
   "main": "src/server.js",
   "type": "module",
   "scripts": {
-    "start": "node .",
+    "start": "node src/app.js",
     "dev": "nodemon --exec \"node -r dotenv/config .\"",
     "test": "mocha -r dotenv/config --timeout 10000 --exit ./tests/**/*.test.js",
     "test:functionals": "mocha -r dotenv/config --timeout 10000 --exit ./tests/functionals/*.test.js",
