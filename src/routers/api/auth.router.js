@@ -7,7 +7,7 @@ import { authMiddleware } from '../../utils/utils.js';
 const router = Router();
 
 router.post('/auth/register', AuthController.register);
-router.post('/auth/login', passport.authenticate('jwt-auth', { session: false }), authMiddleware(['user', 'admin', 'premium']), AuthController.login);
+router.post('/auth/login', AuthController.login);
 router.post('/auth/recoveryPass', AuthController.recoveryPassword);
 router.put('/auth/recovery/:token', AuthController.updatePasswordWithToken);
 
