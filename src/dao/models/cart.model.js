@@ -9,8 +9,8 @@ const CartSchema = new mongoose.Schema({
     products: { type: [cartItemSchema], default: [] },   
 }, { timestamps: true });
 
- CartSchema.pre('find', function () {
-     this.populate('products.product');
- })
+CartSchema.pre('findOne', function () {
+    this.populate('products.product');
+});
 
 export default mongoose.model('carts', CartSchema);

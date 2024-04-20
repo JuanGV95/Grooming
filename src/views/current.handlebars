@@ -1,0 +1,23 @@
+<header>
+  <div class="header">
+    <h2>Bienvenido: {{user.first_name}} {{user.last_name}}</h2>
+    <p>Email: {{user.email}}</p>
+    <p>Age: {{user.age}}</p>
+    <p>Role: {{user.role}}</p>
+
+    <div class="logout">
+      <a href="/api/auth/logout" role="button">Salir</a>
+      <a href="/api/products" role="button">Volver</a>
+    </div>
+  </div>
+</header>
+
+<!-- Sección de productos en el carrito -->
+<div class="carrito">
+  <h2>Productos en el Carrito</h2>
+  <ul>
+    {{#each cart}}
+      <li>{{this.product.title}} - {{this.product.price}} x {{this.product.quantity}}</li>
+    {{/each}}
+  </ul>
+</div>
