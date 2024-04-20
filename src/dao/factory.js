@@ -8,7 +8,7 @@ switch (config.persistence) {
         productDao = new ProductDaoMongoDb();    
         break;
         default:
-        const ProductDaoMemory = (await import('./products.manager.js')).default;
+        const ProductDaoMemory = (await import('./products.dao.js')).default;
         productDao = new ProductDaoMemory();
         break;    
 }
