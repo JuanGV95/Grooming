@@ -2,7 +2,7 @@ import { Router } from 'express';
 import AuthController from '../../controllers/auth.controller.js';
 import passport from 'passport';
 import UserDto from '../../dto/user.dto.js';
-import { authMiddleware } from '../../utils/utils.js';
+
 
 const router = Router();
 

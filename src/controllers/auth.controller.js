@@ -64,14 +64,15 @@ const AuthController = {
       // Actualizar la última conexión del usuario
       user.last_connection = new Date();
       await user.save();
-
+      console.log('user en controller', user)
       // Generar token de acceso
       const token = createToken(user);
       res.cookie('access_token', token, { maxAge: 1000 * 60 * 30, httpOnly: true, signed: true })
         .status(200)
         .json({
           message: 'Acceso correcto',
-          user: new UserDto(user)
+          user: new UserDto(user),
+          cartId: user.cart
         });
     } catch (error) {
       res.status(401).json({ message: error.message });
