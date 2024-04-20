@@ -71,9 +71,4 @@ export const init = () => {
     const newUser = await UserModel.create(user);
     done(null, newUser)
   }));
-
-
-
-
-
 }

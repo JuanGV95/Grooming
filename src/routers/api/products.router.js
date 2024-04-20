@@ -8,7 +8,7 @@ const router = Router();
 
 router.get('/products', passport.authenticate('jwt-auth', { session: false }), ProductController.getProducts);
 
-router.get('/products/:pid', ProductController.getProductById);
+router.get('/products/:pid', passport.authenticate('jwt-auth', { session: false }), authMiddleware(['admin', 'user', 'premium']), ProductController.getProductById);
 
 router.post('/products', passport.authenticate('jwt-auth', { session: false }), authMiddleware(['admin', 'premium']), ProductController.createProduct);
 
